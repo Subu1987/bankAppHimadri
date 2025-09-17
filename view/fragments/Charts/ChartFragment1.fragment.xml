@@ -1,0 +1,111 @@
+<core:FragmentDefinition xmlns="sap.m" 
+    xmlns:core="sap.ui.core" 
+    xmlns:table="sap.ui.table" 
+    xmlns:suite="sap.suite.ui.commons"
+    xmlns:viz="sap.viz.ui5.controls" 
+    xmlns:vizData="sap.viz.ui5.data" 
+    xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds">
+
+    <suite:ChartContainer id="chartContainer" showFullScreen="true" showPersonalization="false" autoAdjustHeight="false"
+        title="" showLegendButton="true">
+
+        <!-- Chart Content -->
+        <suite:content>
+            <!--<suite:ChartContainerContent icon="sap-icon://bar-chart" title="Chart View">
+                <suite:content>
+                    <viz:VizFrame id="idVizFrame" vizType="column" height="380px" width="100%" uiConfig="{applicationSet:'fiori'}">
+                        <viz:dependents>
+                            <viz:Popover id="idPopOverVendorData"/>
+                        </viz:dependents>
+                        <viz:dataset>
+                            <vizData:FlattenedDataset data="{venderHistoryData>/}">
+                                <vizData:dimensions>
+                                    <vizData:DimensionDefinition name="Vendor Code" value="{venderHistoryData>lifnr}"/>
+                                    <vizData:DimensionDefinition name="Vendor Name" value="{venderHistoryData>name1}"/>
+                                </vizData:dimensions>
+                                <vizData:measures>
+                                    <vizData:MeasureDefinition name="PO Value" value="{venderHistoryData>netpr}"/>
+                                    <vizData:MeasureDefinition name="Delivered" value="{venderHistoryData>wrbtr}"/>
+                                    <vizData:MeasureDefinition name="Still to Deliver" value="{venderHistoryData>netwr}"/>
+                                    <vizData:MeasureDefinition name="Vendor Advance" value="{venderHistoryData>vend_adv}"/>
+                                    <vizData:MeasureDefinition name="Creditor" value="{venderHistoryData>creditor}"/>
+                                    <vizData:MeasureDefinition name="LC" value="{venderHistoryData>lc}"/>
+                                    <vizData:MeasureDefinition name="Factoring" value="{venderHistoryData>factoring}"/>
+                                    <vizData:MeasureDefinition name="RXIL" value="{venderHistoryData>rxil}"/>
+                                    <vizData:MeasureDefinition name="ABG" value="{venderHistoryData>abg}"/>
+                                    <vizData:MeasureDefinition name="PBG" value="{venderHistoryData>pbg}"/>
+                                </vizData:measures>
+                            </vizData:FlattenedDataset>
+                        </viz:dataset>
+
+                       
+                        <viz:feeds>
+                            <vizFeeds:FeedItem uid="valueAxis" type="Measure" 
+                                values="PO Value,Delivered,Still to Deliver,Vendor Advance,Creditor,LC,Factoring,RXIL,ABG,PBG"/>
+                            <vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Vendor Code"/>
+                            <vizFeeds:FeedItem uid="color" type="Dimension" values="Vendor Name"/>
+                        </viz:feeds>
+                    </viz:VizFrame>
+                </suite:content>
+            </suite:ChartContainerContent-->
+
+            <!-- Table Content -->
+            <suite:ChartContainerContent icon="sap-icon://table-chart" title="Table View">
+                <suite:content>
+                    <table:Table id="idTable" rows="{venderHistoryData>/}" selectionMode="None" visibleRowCount="10">
+                        <table:columns>
+                            <table:Column>
+                                <Label text="Vendor Code"/>
+                                <table:template><Text text="{venderHistoryData>lifnr}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="Vendor Name"/>
+                                <table:template><Text text="{venderHistoryData>name1}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="PO Value"/>
+                                <table:template><Text text="{venderHistoryData>netpr}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="Delivered"/>
+                                <table:template><Text text="{venderHistoryData>wrbtr}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="Still to Deliver"/>
+                                <table:template><Text text="{venderHistoryData>netwr}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="Vendor Advance"/>
+                                <table:template><Text text="{venderHistoryData>vend_adv}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="Creditor"/>
+                                <table:template><Text text="{venderHistoryData>creditor}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="LC"/>
+                                <table:template><Text text="{venderHistoryData>lc}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="Factoring"/>
+                                <table:template><Text text="{venderHistoryData>factoring}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="RXIL"/>
+                                <table:template><Text text="{venderHistoryData>rxil}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="ABG"/>
+                                <table:template><Text text="{venderHistoryData>abg}"/></table:template>
+                            </table:Column>
+                            <table:Column>
+                                <Label text="PBG"/>
+                                <table:template><Text text="{venderHistoryData>pbg}"/></table:template>
+                            </table:Column>
+                        </table:columns>
+                    </table:Table>
+                </suite:content>
+            </suite:ChartContainerContent>
+        </suite:content>
+    </suite:ChartContainer>
+</core:FragmentDefinition>

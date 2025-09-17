@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog id="quarterYearDialog" title="Select Quarter Year" liveChange="_handleQuarterYearSearch" confirm="_handleQuarterYearClose"
+		cancel="_handleQuarterYearClose" multiSelect="true" contentWidth="auto" class="sapUiPopupWithPadding">
+		<items>
+			<!-- Creating Quarter Year Options from 2015 to 2030 -->
+			<StandardListItem title="2021" type="Active"/>
+			<StandardListItem title="2022" type="Active"/>
+			<StandardListItem title="2023" type="Active"/>
+			<StandardListItem title="2024" type="Active"/>
+			<StandardListItem title="2025" type="Active"/>
+			<StandardListItem title="2026" type="Active"/>
+		</items>
+	</SelectDialog>
+</core:FragmentDefinition>

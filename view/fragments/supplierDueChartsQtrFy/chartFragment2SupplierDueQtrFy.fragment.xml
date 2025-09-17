@@ -1,0 +1,72 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table" xmlns:suite="sap.suite.ui.commons"
+	xmlns:viz="sap.viz.ui5.controls" xmlns:vizData="sap.viz.ui5.data" xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds">
+	<suite:ChartContainer id="chartContainer" showFullScreen="true" showPersonalization="false" autoAdjustHeight="false"
+		title="{globalData>/selectedTabTextSupplierDueQtrFY}" showLegendButton="false">
+		<!-- Chart Content -->
+		<suite:content>
+			<suite:ChartContainerContent icon="sap-icon://bar-chart" title="Chart View">
+				<suite:content>
+					<viz:VizFrame id="idVizFrameSupplierDueQtrFY" vizType="column" height="380px" width="100%" uiConfig="{applicationSet:'fiori'}">
+					    <!-- Define dependents for Popover -->
+						<viz:dependents>
+							<viz:Popover id="idPopOverAllSupplierDueQtrFY"></viz:Popover>
+						</viz:dependents>
+						<viz:dataset>
+							<vizData:FlattenedDataset data="{totalSupplierDueQtrFYlistData>/}">
+								<vizData:dimensions>
+									<!--<vizData:DimensionDefinition name="Supplier Name" value="{totalSupplierDueQtrFYlistData>name1}"/>-->
+									<vizData:DimensionDefinition name="Quarter Year" value="{totalSupplierDueQtrFYlistData>gjahr}"/>
+    									<vizData:DimensionDefinition name="Quarter" value="{totalSupplierDueQtrFYlistData>poper}"/>
+								</vizData:dimensions>
+								<vizData:measures>
+									<vizData:MeasureDefinition name="Amount (₹ Cr)" value="{totalSupplierDueQtrFYlistData>amount}"/>
+								</vizData:measures>
+							</vizData:FlattenedDataset>
+						</viz:dataset>
+						<viz:feeds>
+							<vizFeeds:FeedItem uid="valueAxis" type="Measure" values="Amount (₹ Cr)"/>
+							<!--<vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Supplier Name"/>-->
+							<vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Quarter Year"/>
+							<vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Quarter"/>
+							
+						</viz:feeds>
+						
+					</viz:VizFrame>
+				</suite:content>
+			</suite:ChartContainerContent>
+			<!-- Table Content -->
+			<suite:ChartContainerContent icon="sap-icon://table-chart" title="Table View">
+				<suite:content>
+					<table:Table id="idTable" rows="{totalSupplierDueQtrFYlistData>/}" selectionMode="None">
+						<table:columns>
+							<!--<table:Column>
+								<Label text="Supplier Name"/>
+								<table:template>
+									<Text text="{singleSupplierDueQtrFYlistData>name1}"/>
+								</table:template>
+							</table:Column>-->
+							<table:Column visible="{globalData>/isQuarterSelected}">
+								<Label text="Quarter"/>
+								<table:template>
+									<Text text="{totalSupplierDueQtrFYlistData>poper}"/>
+								</table:template>
+							</table:Column>
+							<table:Column>
+								<Label text="Quarter Year"/>
+								<table:template>
+									<Text text="{totalSupplierDueQtrFYlistData>gjahr}"/>
+								</table:template>
+							</table:Column>
+							<table:Column>
+								<Label text="Amount (₹ Cr)"/>
+								<table:template>
+									<Text text="{totalSupplierDueQtrFYlistData>amount}"/>
+								</table:template>
+							</table:Column>
+						</table:columns>
+					</table:Table>
+				</suite:content>
+			</suite:ChartContainerContent>
+		</suite:content>
+	</suite:ChartContainer>
+</core:FragmentDefinition>

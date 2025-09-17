@@ -1,0 +1,7 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" controllerName="com.infocus.venderApp.controller.App" displayBlock="true"
+	xmlns="sap.m">
+	<Shell>
+		<App id="app" busy="{appView/>busy}" busyIndicatorDelay="{appView/>delay}" width="100%" height="100%"></App>
+	</Shell>
+	
+</mvc:View>

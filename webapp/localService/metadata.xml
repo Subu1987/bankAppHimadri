@@ -1,0 +1,54 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZO_VEND_HISTORY_SRV" xml:lang="en" sap:schema-version="1">
+            <Annotation
+                xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
+                <EntityType Name="es_vend_hst" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="bukrs"/>
+                    </Key>
+                    <Property Name="bukrs" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Company Code"/>
+                    <Property Name="lifnr" Type="Edm.String" sap:unicode="false" sap:label="Vendor"/>
+                    <Property Name="budat" Type="Edm.String" sap:unicode="false" sap:label="Date"/>
+                    <Property Name="name1" Type="Edm.String" sap:unicode="false" sap:label="Vendor name"/>
+                    <Property Name="netpr" Type="Edm.String" sap:unicode="false" sap:label="PO value"/>
+                    <Property Name="wrbtr" Type="Edm.String" sap:unicode="false" sap:label="Delivered"/>
+                    <Property Name="netwr" Type="Edm.String" sap:unicode="false" sap:label="Still to be Delivered"/>
+                    <Property Name="vend_adv" Type="Edm.String" sap:unicode="false" sap:label="Vendor Advance"/>
+                    <Property Name="creditor" Type="Edm.String" sap:unicode="false" sap:label="Creditor"/>
+                    <Property Name="lc" Type="Edm.String" sap:unicode="false" sap:label="LC"/>
+                    <Property Name="factoring" Type="Edm.String" sap:unicode="false" sap:label="Factoring"/>
+                    <Property Name="rxil" Type="Edm.String" sap:unicode="false" sap:label="RXIL"/>
+                    <Property Name="abg" Type="Edm.String" sap:unicode="false" sap:label="ABG"/>
+                    <Property Name="pbg" Type="Edm.String" sap:unicode="false" sap:label="PBG"/>
+                </EntityType>
+                <EntityType Name="es_f4bukrs" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="bukrs"/>
+                    </Key>
+                    <Property Name="bukrs" Type="Edm.String" Nullable="false" sap:unicode="false"/>
+                    <Property Name="butxt" Type="Edm.String" sap:unicode="false"/>
+                </EntityType>
+                <EntityType Name="es_f4lifnr" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="lifnr"/>
+                    </Key>
+                    <Property Name="lifnr" Type="Edm.String" Nullable="false" sap:unicode="false"/>
+                    <Property Name="name1" Type="Edm.String" sap:unicode="false"/>
+                </EntityType>
+                <EntityContainer Name="ZO_VEND_HISTORY_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                    <EntitySet Name="es_vend_hstset" EntityType="ZO_VEND_HISTORY_SRV.es_vend_hst" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                    <EntitySet Name="es_f4bukrsset" EntityType="ZO_VEND_HISTORY_SRV.es_f4bukrs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                    <EntitySet Name="es_f4lifnrset" EntityType="ZO_VEND_HISTORY_SRV.es_f4lifnr" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                </EntityContainer>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZO_VEND_HISTORY_SRV/$metadata"/>
+                    <atom:link
+                        xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZO_VEND_HISTORY_SRV/$metadata"/>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>

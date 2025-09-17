@@ -1,0 +1,15 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog id="fiscalYearDialog" title="Select Fiscal Year" liveChange="_handleFiscalYearSearch" confirm="_handleFiscalYearClose"
+		cancel="_handleFiscalYearClose" multiSelect="true" contentWidth="auto" class="sapUiPopupWithPadding">
+		<items>
+			<!-- Creating Fiscal Year Options from 2015 to 2030 -->
+			<StandardListItem title="2020" type="Active"/>
+			<StandardListItem title="2021" type="Active"/>
+			<StandardListItem title="2022" type="Active"/>
+			<StandardListItem title="2023" type="Active"/>
+			<StandardListItem title="2024" type="Active"/>
+			<StandardListItem title="2025" type="Active"/>
+			<StandardListItem title="2026" type="Active"/>
+		</items>
+	</SelectDialog>
+</core:FragmentDefinition>

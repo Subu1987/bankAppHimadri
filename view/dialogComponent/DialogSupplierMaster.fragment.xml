@@ -1,0 +1,23 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog id="idSupplierMasterDialog" title="Select Supplier Master" draggable="true" resizable="true">
+		<content>
+			<Toolbar>
+				<SearchField id="idSupplierSearchField" placeholder="Search..." liveChange=".onSearchSupplierMaster"/>
+			</Toolbar>
+			<List 
+			id="idSupplierMasterList" 
+			mode="MultiSelect"
+			growing="true" 
+			growingThreshold="1000" 
+			selectionChange=".onSelectionChangeSupplierMaster"
+			items="{supplierMasterData>/}">
+			    
+				<StandardListItem title="{supplierMasterData>lifnr}" description="{supplierMasterData>name1}"/>
+			</List>
+		</content>
+		<buttons>
+			<Button text="OK" press=".onConfirmSupplierMaster"/>
+			<Button text="Cancel" press=".onCloseSupplierMaster"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

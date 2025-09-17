@@ -1,0 +1,224 @@
+/* Enter your custom styles here */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Allow text to wrap inside IconTabFilter */
+.sapMIconTabFilter .sapMText {
+    white-space: normal; /* Allow wrapping */
+    word-wrap: break-word; /* Break words if necessary */
+    overflow-wrap: break-word; /* Prevent text overflow */
+}
+.customTitleCenter {
+	width: 100%;
+	text-align: center;
+	display: block;
+	color: #004593; /* Optional: apply color */
+	font-weight: bold;
+}
+
+
+/* For most browsers */
+.boldText input::placeholder {
+    font-weight: bold !important;
+    color: #000 !important;
+}
+
+/* For Safari */
+.boldText input::-webkit-input-placeholder {
+    font-weight: bold !important;
+    color: #000 !important;
+}
+
+/* Targets the outermost wrapper including value help icon */
+.roundedInput .sapMInputBaseContentWrapper {
+  border-radius: 6px !important;
+  border: 1px solid #ccc !important; /* Optional: visible border */
+  overflow: hidden; /* Ensures the rounding is respected */
+}
+
+/* Optional: for cleaner appearance */
+.roundedInput .sapMInputBaseInner {
+  border: none !important;
+}
+
+/* Optional: style on focus */
+.roundedInput .sapMInputFocused .sapMInputBaseContentWrapper {
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+
+
+/* Optional: make input text bold */
+.boldText .sapMInputBaseInner {
+  font-weight: bold;
+}
+
+/* Make text bold and larger */
+.beautifulTabBar .sapMITBText {
+	font-size: 1rem;
+	font-weight: bold;
+	color: #333333;
+	text-align: center;
+	width: 100%;
+}
+
+/* Center icon and text vertically and horizontally */
+.beautifulTabBar .sapMITBTab {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 15px 10px;
+}
+
+/* Optional: Adjust icon size */
+.beautifulTabBar .sapMITBIcon {
+	font-size: 1.2rem;
+	margin-bottom: 6px;
+}
+
+/* Optional: Add spacing and rounded corners for aesthetics */
+.beautifulTabBar .sapMITBFilter {
+	border-radius: 12px;
+	padding: 12px;
+}
+
+/* Style for bold, beautiful radio button text */
+.styledRadioGroup .sapMRbBLabel {
+	font-weight: bold;
+	font-size: 0.9rem;
+	color: #2c3e50; /* You can choose any theme-friendly color */
+}
+
+/* Optional: Add spacing and hover effect for better feel */
+.styledRadioGroup .sapMRb {
+	margin: 8px;
+	transition: all 0.2s ease-in-out;
+}
+
+.styledRadioGroup .sapMRb:hover .sapMRbBLabel {
+	color: #0070f2;
+}
+.styledRadioGroup .sapMRbSel .sapMRbBOut {
+	border-color: #0070f2;
+	background-color: #0070f2;
+}
+
+
+
+
+.smallIcon .sapMBtnIcon {
+    font-size: 1.1rem !important;
+    /* Adjust the font-size as per your preference */
+}
+
+.round {
+    border-radius: 50px !important;
+}
+
+.sapMInputBaseInner {
+    border-radius: 10px;
+}
+
+.boldText {
+    font-weight: bold !important;
+}
+
+#dynamicTable {
+    border-right: 1.2px solid #34618747 !important;
+}
+
+#chartPanel {
+    border-left: 1.2px solid #34618747 !important;
+}
+
+.highlightedRow {
+    background-color: #e5e5ff !important;
+}
+
+.chartButton {
+    font-size: 1.5rem !important;
+}
+
+.incomingCircle {
+    width: 15px;
+    height: 15px;
+    background-color: #00e600;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.outgoingCircle {
+    width: 15px;
+    height: 15px;
+    background-color: #0000b3;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.balanceText {
+    margin-left: 5px;
+}
+
+.pdfTable {
+    width: auto;
+    /* Allow table to expand horizontally */
+    border-collapse: collapse;
+    margin: 0;
+    /* Remove any margin */
+    padding: 0;
+    /* Remove any padding */
+    white-space: nowrap;
+    /* Prevent line breaks within table cells */
+    overflow-x: auto;
+    /* Enable horizontal scrolling */
+}
+
+.pdfTable td {
+    border: 1px solid #4c4cff;
+    padding: 8px;
+    text-align: left;
+}
+
+.pdfTable th {
+    background-color: #4d4dff;
+    font-weight: bold !important;
+}
+
+.sapMListTblRow {
+    margin: 0;
+    /* Remove any margin */
+    padding: 0;
+    /* Remove any padding */
+}
+.pdfTable td {
+    border: 1px solid #c0c4cc;
+    padding: 8px;
+    text-align: left;
+}
+ 
+.pdfTable th {
+    background-color: #91c8f6;
+    font-weight: bold;
+}
+.sapMBtnInner{
+
+	border: none !important;
+
+}
+ 
+.highlightedRow {
+
+    background-color: #5fb2f7 !important;
+
+}
+ 
+.boldText {
+
+    font-weight: bold !important;
+
+}

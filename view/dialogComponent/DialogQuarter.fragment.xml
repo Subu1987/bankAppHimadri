@@ -1,0 +1,20 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+    <SelectDialog
+        id="quarterDialog"
+        title="Select Quarter"
+        search="_handleValueQuarterSearch"
+        confirm="_handleValueQuarterClose"
+        cancel="_handleValueQuarterClose"
+        multiSelect="true"
+        contentWidth="auto"
+        class="sapUiPopupWithPadding">
+        
+        <items>
+            <StandardListItem title="Q1" type="Active"/>
+            <StandardListItem title="Q2" type="Active"/>
+            <StandardListItem title="Q3" type="Active"/>
+            <StandardListItem title="Q4" type="Active"/>
+        </items>
+
+    </SelectDialog>
+</core:FragmentDefinition>
