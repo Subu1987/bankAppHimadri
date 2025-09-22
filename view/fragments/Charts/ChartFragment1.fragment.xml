@@ -1,111 +1,127 @@
-<core:FragmentDefinition xmlns="sap.m" 
-    xmlns:core="sap.ui.core" 
-    xmlns:table="sap.ui.table" 
-    xmlns:suite="sap.suite.ui.commons"
-    xmlns:viz="sap.viz.ui5.controls" 
-    xmlns:vizData="sap.viz.ui5.data" 
-    xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds">
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table">
+    <table:Table id="idTable" rows="{venderHistoryData>/}" selectionMode="None" visibleRowCount="10" width="100%" enableColumnReordering="false">
+        <table:columns>
 
-    <suite:ChartContainer id="chartContainer" showFullScreen="true" showPersonalization="false" autoAdjustHeight="false"
-        title="" showLegendButton="true">
+            <table:Column width="150px" sortProperty="lifnr" filterProperty="lifnr">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="Vendor Code" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>lifnr}" wrapping="true"/>
+                </table:template>
+            </table:Column>
 
-        <!-- Chart Content -->
-        <suite:content>
-            <!--<suite:ChartContainerContent icon="sap-icon://bar-chart" title="Chart View">
-                <suite:content>
-                    <viz:VizFrame id="idVizFrame" vizType="column" height="380px" width="100%" uiConfig="{applicationSet:'fiori'}">
-                        <viz:dependents>
-                            <viz:Popover id="idPopOverVendorData"/>
-                        </viz:dependents>
-                        <viz:dataset>
-                            <vizData:FlattenedDataset data="{venderHistoryData>/}">
-                                <vizData:dimensions>
-                                    <vizData:DimensionDefinition name="Vendor Code" value="{venderHistoryData>lifnr}"/>
-                                    <vizData:DimensionDefinition name="Vendor Name" value="{venderHistoryData>name1}"/>
-                                </vizData:dimensions>
-                                <vizData:measures>
-                                    <vizData:MeasureDefinition name="PO Value" value="{venderHistoryData>netpr}"/>
-                                    <vizData:MeasureDefinition name="Delivered" value="{venderHistoryData>wrbtr}"/>
-                                    <vizData:MeasureDefinition name="Still to Deliver" value="{venderHistoryData>netwr}"/>
-                                    <vizData:MeasureDefinition name="Vendor Advance" value="{venderHistoryData>vend_adv}"/>
-                                    <vizData:MeasureDefinition name="Creditor" value="{venderHistoryData>creditor}"/>
-                                    <vizData:MeasureDefinition name="LC" value="{venderHistoryData>lc}"/>
-                                    <vizData:MeasureDefinition name="Factoring" value="{venderHistoryData>factoring}"/>
-                                    <vizData:MeasureDefinition name="RXIL" value="{venderHistoryData>rxil}"/>
-                                    <vizData:MeasureDefinition name="ABG" value="{venderHistoryData>abg}"/>
-                                    <vizData:MeasureDefinition name="PBG" value="{venderHistoryData>pbg}"/>
-                                </vizData:measures>
-                            </vizData:FlattenedDataset>
-                        </viz:dataset>
+            <table:Column width="200px" sortProperty="name1" filterProperty="name1">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="Vendor Name" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>name1}" wrapping="true"/>
+                </table:template>
+            </table:Column>
 
-                       
-                        <viz:feeds>
-                            <vizFeeds:FeedItem uid="valueAxis" type="Measure" 
-                                values="PO Value,Delivered,Still to Deliver,Vendor Advance,Creditor,LC,Factoring,RXIL,ABG,PBG"/>
-                            <vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Vendor Code"/>
-                            <vizFeeds:FeedItem uid="color" type="Dimension" values="Vendor Name"/>
-                        </viz:feeds>
-                    </viz:VizFrame>
-                </suite:content>
-            </suite:ChartContainerContent-->
+            <table:Column width="120px" sortProperty="netpr" filterProperty="netpr">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="PO Value" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>netpr}" wrapping="true"/>
+                </table:template>
+            </table:Column>
 
-            <!-- Table Content -->
-            <suite:ChartContainerContent icon="sap-icon://table-chart" title="Table View">
-                <suite:content>
-                    <table:Table id="idTable" rows="{venderHistoryData>/}" selectionMode="None" visibleRowCount="10">
-                        <table:columns>
-                            <table:Column>
-                                <Label text="Vendor Code"/>
-                                <table:template><Text text="{venderHistoryData>lifnr}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="Vendor Name"/>
-                                <table:template><Text text="{venderHistoryData>name1}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="PO Value"/>
-                                <table:template><Text text="{venderHistoryData>netpr}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="Delivered"/>
-                                <table:template><Text text="{venderHistoryData>wrbtr}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="Still to Deliver"/>
-                                <table:template><Text text="{venderHistoryData>netwr}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="Vendor Advance"/>
-                                <table:template><Text text="{venderHistoryData>vend_adv}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="Creditor"/>
-                                <table:template><Text text="{venderHistoryData>creditor}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="LC"/>
-                                <table:template><Text text="{venderHistoryData>lc}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="Factoring"/>
-                                <table:template><Text text="{venderHistoryData>factoring}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="RXIL"/>
-                                <table:template><Text text="{venderHistoryData>rxil}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="ABG"/>
-                                <table:template><Text text="{venderHistoryData>abg}"/></table:template>
-                            </table:Column>
-                            <table:Column>
-                                <Label text="PBG"/>
-                                <table:template><Text text="{venderHistoryData>pbg}"/></table:template>
-                            </table:Column>
-                        </table:columns>
-                    </table:Table>
-                </suite:content>
-            </suite:ChartContainerContent>
-        </suite:content>
-    </suite:ChartContainer>
+            <table:Column width="120px" sortProperty="wrbtr" filterProperty="wrbtr">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="Delivered" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>wrbtr}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="150px" sortProperty="netwr" filterProperty="netwr">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="Still to Deliver" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>netwr}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="150px" sortProperty="vend_adv" filterProperty="vend_adv">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="Vendor Advance" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>vend_adv}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="120px" sortProperty="creditor" filterProperty="creditor">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="Creditor" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>creditor}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="120px" sortProperty="lc" filterProperty="lc">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="LC" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>lc}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="150px" sortProperty="factoring" filterProperty="factoring">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="Factoring" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>factoring}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="120px" sortProperty="rxil" filterProperty="rxil">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="RXIL" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>rxil}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="120px" sortProperty="abg" filterProperty="abg">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="ABG" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>abg}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+            <table:Column width="120px" sortProperty="pbg" filterProperty="pbg">
+                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
+                    <Label text="PBG" class="sapUiTinyMargin"/>
+                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
+                </HBox>
+                <table:template>
+                    <Text text="{venderHistoryData>pbg}" wrapping="true"/>
+                </table:template>
+            </table:Column>
+
+        </table:columns>
+    </table:Table>
 </core:FragmentDefinition>

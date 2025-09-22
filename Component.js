@@ -1,32 +1,45 @@
 sap.ui.define([
-	"sap/ui/core/UIComponent",
-	"sap/ui/Device",
-	"com/infocus/venderApp/model/models",
-	"sap/ui/model/json/JSONModel"
-], function(UIComponent, Device, models, JSONModel) {
-	"use strict";
+    "sap/ui/core/UIComponent",
+    "sap/ui/Device",
+    "com/infocus/venderApp/model/models",
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageBox",
+    "sap/ui/core/BusyIndicator"
+], function (UIComponent, Device, models, JSONModel, MessageBox, BusyIndicator) {
+    "use strict";
 
-	return UIComponent.extend("com.infocus.venderApp.Component", {
+    return UIComponent.extend("com.infocus.venderApp.Component", {
 
-		metadata: {
-			manifest: "json"
-		},
+        metadata: {
+            manifest: "json"
+        },
 
-		/**
-		 * The component is initialized by UI5 automatically during the startup of the app and calls the init method once.
-		 * @public
-		 * @override
-		 */
-		init: function() {
-			// call the base component's init function
-			UIComponent.prototype.init.apply(this, arguments);
+        init: function () {
+            // Call base component's init
+            UIComponent.prototype.init.apply(this, arguments);
 
-			// set the device model
-			this.setModel(models.createDeviceModel(), "device");
-			
-			// create the views based on url/hash
-			this.getRouter().initialize();
-			
-		}
-	});
+            // Set device model
+            this.setModel(models.createDeviceModel(), "device");
+
+            var oModel = this.getModel();
+
+            if (oModel) {
+                BusyIndicator.show(0); // Show busy while metadata loads
+
+                oModel.attachMetadataLoaded(function () {
+                    BusyIndicator.hide(); // Hide once metadata is loaded
+                    console.log("OData metadata successfully loaded.");
+                });
+
+                oModel.attachMetadataFailed(function (oError) {
+                    BusyIndicator.hide();
+                    console.error("OData metadata load failed:", oError);
+                    MessageBox.error("Failed to load service metadata. Please contact support.");
+                });
+            }
+
+            // Initialize router
+            this.getRouter().initialize();
+        }
+    });
 });

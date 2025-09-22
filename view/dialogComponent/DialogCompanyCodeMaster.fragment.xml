@@ -1,0 +1,23 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog id="idCompanyCodeMasterDialog" title="Select Company Code Master" draggable="true" resizable="true">
+		<content>
+			<Toolbar>
+				<SearchField id="idCompanyCodeSearchField" placeholder="Search..." liveChange=".onSearchCompanyCodeMaster"/>
+			</Toolbar>
+			<List 
+			id="idCompanyCodeMasterList" 
+			mode="MultiSelect"
+			growing="true" 
+			growingThreshold="1000" 
+			selectionChange=".onSelectionChangeCompanyCodeMaster"
+			items="{companyCodeMasterData>/}">
+			    
+				<StandardListItem title="{companyCodeMasterData>bukrs}" description="{companyCodeMasterData>name1}"/>
+			</List>
+		</content>
+		<buttons>
+			<Button text="OK" press=".onConfirmCompanyCodeMaster"/>
+			<Button text="Cancel" press=".onCloseCompanyCodeMaster"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

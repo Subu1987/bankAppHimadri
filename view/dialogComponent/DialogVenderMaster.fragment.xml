@@ -1,0 +1,24 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<Dialog id="idVenderMasterDialog" title="Select Vender Master" draggable="true" resizable="true">
+		<content>
+			<Toolbar>
+				<SearchField id="idVenderSearchField" placeholder="Search..." liveChange=".onSearchVenderMaster"/>
+				<ToolbarSpacer/>
+				<Button id="idSelectAllBtn" text="Select All" press=".onToggleSelectAll"/>
+			</Toolbar>
+			<List 
+				id="idVenderMasterList" 
+				mode="MultiSelect"
+				growing="true" 
+				growingThreshold="1000" 
+				selectionChange=".onSelectionChangeVenderMaster"
+				items="{venderMasterData>/}">
+				<StandardListItem title="{venderMasterData>lifnr}" description="{venderMasterData>name1}"/>
+			</List>
+		</content>
+		<buttons>
+			<Button text="OK" press=".onConfirmVenderMaster"/>
+			<Button text="Cancel" press=".onCloseVenderMaster"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>
