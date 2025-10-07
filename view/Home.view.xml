@@ -5,7 +5,7 @@
 		<customHeader>
 			<Bar>
 				<contentMiddle>
-					<Title text="Vendor History" level="H2" titleStyle="H2" class="customTitleCenter"/>
+					<Title text="Supplier Analysis" level="H2" titleStyle="H2" class="customTitleCenter"/>
 				</contentMiddle>
 			</Bar>
 		</customHeader>
@@ -54,7 +54,7 @@
 					<IconTabBar id="iconTabBar" selectedKey="scenario1" select="onTabSelect" stretchContentHeight="true" class="beautifulTabBar">
 						<items>
 							<!-- Scenario 1 -->
-							<IconTabFilter key="scenario1" text="Vender History" icon="sap-icon://group" tooltip="Vender History" iconColor="Positive"
+							<IconTabFilter key="scenario1" text="Supplier Analysis" icon="sap-icon://group" tooltip="Supplier Analysis" iconColor="Positive"
 								design="Horizontal">
 								<content>
 									<VBox visible="{globalData>/isChartFragment1Visible}">

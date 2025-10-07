@@ -31,7 +31,7 @@ sap.ui.define([
 
 			// Load both datasets in parallel
 			Promise.all([
-					this.getVenderMasterParametersData(),
+					/*this.getVenderMasterParametersData(),*/
 					this.getCompanyCodeMasterParametersData()
 				])
 				.then(function() {
@@ -111,10 +111,13 @@ sap.ui.define([
 		},
 
 		/*************** get parameters data *****************/
+
 		getVenderMasterParametersData: function() {
 			var that = this;
 			var oModel = this.getOwnerComponent().getModel();
 			var oVenderMasterModel = this.getOwnerComponent().getModel("venderMasterData");
+			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
+			var aSelectedCompanyCodes = oGlobalData.selectedCompanyCodeIDs || [];
 			var sUrl = "/es_f4lifnrset";
 
 			return new Promise(function(resolve, reject) {
@@ -123,7 +126,13 @@ sap.ui.define([
 					return;
 				}
 
+				// Apply filter (bukrs eq '1100')
+				var aFilters = [
+					new sap.ui.model.Filter("bukrs", sap.ui.model.FilterOperator.EQ, aSelectedCompanyCodes[0])
+				];
+
 				oModel.read(sUrl, {
+					filters: aFilters,
 					success: function(oResponse) {
 						var aResults = oResponse && oResponse.results ? oResponse.results : [];
 						aResults.sort(function(a, b) {
@@ -168,68 +177,106 @@ sap.ui.define([
 		},
 
 		/*************** Fragment handling *****************/
+
 		handleValueVenderMaster: function(oEvent) {
+			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
+			var aSelectedCompanyCodes = oGlobalData.selectedCompanyCodeIDs || [];
+
+			if (!aSelectedCompanyCodes.length) {
+				sap.m.MessageBox.error("Please select a Company Code before choosing a Vendor.");
+				return;
+			}
+
 			var that = this;
 			this._VenderInputId = oEvent.getSource().getId();
 			var oVenderMasterModel = this.getOwnerComponent().getModel("venderMasterData");
 
-			if (!oVenderMasterModel.getData() || oVenderMasterModel.getData().length === 0) {
-				sap.ui.core.BusyIndicator.show();
-				this.getVenderMasterParametersData()
-					.then(function() {
-						sap.ui.core.BusyIndicator.hide();
-						that._openVenderMasterDialog();
-					})
-					.catch(function(err) {
-						sap.ui.core.BusyIndicator.hide();
-						sap.m.MessageBox.error(err);
-					});
-			} else {
-				this._openVenderMasterDialog();
-			}
-		},
-		_openVenderMasterDialog: function() {
+			// Lazy-load dialog if not already created
 			if (!this._oVenderMasterDialog) {
 				this._oVenderMasterDialog = sap.ui.xmlfragment(
 					this.getView().getId() + "VenderMasterDialog",
 					"com.infocus.venderApp.view.dialogComponent.DialogVenderMaster",
 					this
 				);
+				this._oVenderMasterDialog.setModel(oVenderMasterModel);
 				this.getView().addDependent(this._oVenderMasterDialog);
 			}
-			this._oVenderMasterDialog.open();
-		},
 
+			// Step 1: Show global busy indicator
+			sap.ui.core.BusyIndicator.show(0); // 0 = immediately
+
+			// Step 2: Normalize model data
+			var aExistingData = oVenderMasterModel.getData();
+			if (!Array.isArray(aExistingData)) {
+				if (aExistingData && typeof aExistingData === "object") {
+					aExistingData = Object.values(aExistingData);
+				} else {
+					aExistingData = [];
+				}
+			}
+
+			// Step 3: Check if data for selected company exists
+			var bDataForSelectedCompany = false;
+			for (var i = 0; i < aExistingData.length; i++) {
+				if (aExistingData[i].bukrs === aSelectedCompanyCodes[0]) {
+					bDataForSelectedCompany = true;
+					break;
+				}
+			}
+
+			// Step 4: Fetch data only if needed
+			var pData = (aExistingData.length === 0 || !bDataForSelectedCompany) ? this.getVenderMasterParametersData() : Promise.resolve();
+
+			pData
+				.then(function() {
+					that._oVenderMasterDialog.open();
+				})
+				.catch(function(err) {
+					sap.m.MessageBox.error(err);
+				})
+				.finally(function() {
+					sap.ui.core.BusyIndicator.hide(); // hide global busy
+				});
+		},
 		handleValueCompanyCodeMaster: function(oEvent) {
 			var that = this;
 			this._CompanyCodeInputId = oEvent.getSource().getId();
 			var oCompanyCodeMasterModel = this.getOwnerComponent().getModel("companyCodeMasterData");
 
-			if (!oCompanyCodeMasterModel.getData() || oCompanyCodeMasterModel.getData().length === 0) {
-				sap.ui.core.BusyIndicator.show();
-				this.getCompanyCodeMasterParametersData()
-					.then(function() {
-						sap.ui.core.BusyIndicator.hide();
-						that._openCompanyCodeMasterDialog();
-					})
-					.catch(function(err) {
-						sap.ui.core.BusyIndicator.hide();
-						sap.m.MessageBox.error(err);
-					});
-			} else {
-				this._openCompanyCodeMasterDialog();
-			}
-		},
-		_openCompanyCodeMasterDialog: function() {
 			if (!this._oCompanyCodeMasterDialog) {
 				this._oCompanyCodeMasterDialog = sap.ui.xmlfragment(
 					this.getView().getId() + "CompanyCodeMasterDialog",
 					"com.infocus.venderApp.view.dialogComponent.DialogCompanyCodeMaster",
 					this
 				);
+				this._oCompanyCodeMasterDialog.setModel(oCompanyCodeMasterModel);
 				this.getView().addDependent(this._oCompanyCodeMasterDialog);
 			}
-			this._oCompanyCodeMasterDialog.open();
+
+			// Show global busy indicator
+			sap.ui.core.BusyIndicator.show(0);
+
+			var aExistingData = oCompanyCodeMasterModel.getData();
+			if (!Array.isArray(aExistingData)) {
+				if (aExistingData && typeof aExistingData === "object") {
+					aExistingData = Object.values(aExistingData);
+				} else {
+					aExistingData = [];
+				}
+			}
+
+			var pData = (aExistingData.length === 0) ? this.getCompanyCodeMasterParametersData() : Promise.resolve();
+
+			pData
+				.then(function() {
+					that._oCompanyCodeMasterDialog.open();
+				})
+				.catch(function(err) {
+					sap.m.MessageBox.error(err);
+				})
+				.finally(function() {
+					sap.ui.core.BusyIndicator.hide();
+				});
 		},
 
 		/*************** search value within fragment *****************/
@@ -503,6 +550,7 @@ sap.ui.define([
 		/*************** get the Backend data for Vender  *****************/
 
 		getVendorHistoryBackendData: function() {
+			var that = this;
 			// Check Input Validation
 			if (!this.validateInputs()) {
 				return;
@@ -540,6 +588,11 @@ sap.ui.define([
 							return parseInt(a.lifnr, 10) - parseInt(b.lifnr, 10);
 						});
 					}
+
+					// Convert values for each item
+					aResults = aResults.map(function(item) {
+						return that.convertValuesToLacs(item); // 👈 use the helper
+					});
 
 					oVendorHistoryModel.setData(aResults || []);
 					console.log("Vendor history data loaded:", aResults);
@@ -598,24 +651,21 @@ sap.ui.define([
 				return parseFloat(b.turnOver) - parseFloat(a.turnOver);
 			});
 		},
-		convertTurnoverToCrore: function(item) {
-			if (item.turnOver) {
-				// Convert rupees to crores (1 crore = 10,000,000)
-				var croreValueTurnOver = item.turnOver / 10000000;
+		convertValuesToLacs: function(item) {
+			// Fields that need to be converted
+			var aFieldsToConvert = [
+				"netpr", "wrbtr", "netwr", "vend_adv",
+				"creditor", "lc", "factoring", "rxil", "abg", "pbg"
+			];
 
-				// Round to 2 decimal places
-				item.turnOver = parseFloat(croreValueTurnOver).toFixed(2);
-			}
+			aFieldsToConvert.forEach(function(field) {
+				if (item[field] !== undefined && item[field] !== null && !isNaN(item[field])) {
+					var lacValue = parseFloat(item[field]) / 100000; // Convert to Lacs
+					item[field] = parseFloat(lacValue).toFixed(2); // Round to 2 decimals
+				}
+			});
 
-			if (item.amount) {
-				// Convert rupees to crores (1 crore = 10,000,000)
-				var croreValue = item.amount / 10000000;
-
-				// Round to 2 decimal places
-				item.amount = parseFloat(croreValue).toFixed(2);
-
-			}
-
+			return item;
 		},
 		generateSupplierShort: function(item) {
 			const words = item.supplier.split(" ");

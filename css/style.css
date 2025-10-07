@@ -5,6 +5,24 @@
     padding: 0;
 }
 
+/* Header background */
+html .sapUiTableColHdrCnt {
+    background-color: #107e3e !important;
+    color: #fff !important;
+}
+
+/* Row hover */
+html .sapUiTableCtrl tr.sapUiTableRowHvr > td {
+    background-color: #107e3e !important;
+}
+
+/* Selected row (optional) */
+html .sapUiTableCtrl tr.sapUiTableRowSel > td {
+    background-color: #107e3e !important;
+    color: #fff !important;
+}
+
+
 
 /* Allow text to wrap inside IconTabFilter */
 .sapMIconTabFilter .sapMText {
