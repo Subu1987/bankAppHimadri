@@ -1,17 +1,17 @@
 sap.ui.define([
-	"com/infocus/venderApp/controller/BaseController",
+	"com/infocus/ZBankApp/controller/BaseController",
 	"sap/m/MessageBox",
 	"sap/ui/core/BusyIndicator"
 ], function(BaseController, MessageBox, BusyIndicator) {
 	"use strict";
 
-	return BaseController.extend("com.infocus.venderApp.controller.App", {
+	return BaseController.extend("com.infocus.ZBankApp.controller.App", {
 
 		onInit: function() {
 		    console.log("App Controller onInit called");
 
 			// Load metadata for the default OData model (defined in manifest)
-			this._loadAllModelMetadata();
+			/*this._loadAllModelMetadata();*/
 		},
 
 		_loadAllModelMetadata: function() {

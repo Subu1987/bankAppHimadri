@@ -1,11 +1,11 @@
 <mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns:form="sap.ui.layout.form" xmlns:core="sap.ui.core"
 	xmlns:f="sap.ui.layout.form" xmlns:viz="sap.viz.ui5.controls" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds"
-	xmlns:viz.data="sap.viz.ui5.data" xmlns:chart="sap.suite.ui.commons" controllerName="com.infocus.venderApp.controller.Home">
+	xmlns:viz.data="sap.viz.ui5.data" xmlns:chart="sap.suite.ui.commons" controllerName="com.infocus.ZBankApp.controller.Home">
 	<Page id="page" enableScrolling="true" showNavButton="false" navButtonPress="onNavBack" showFooter="false" titleLevel="H1">
 		<customHeader>
 			<Bar>
 				<contentMiddle>
-					<Title text="Supplier Analysis" level="H2" titleStyle="H2" class="customTitleCenter"/>
+					<Title text="Bank Application" level="H2" titleStyle="H2" class="customTitleCenter"/>
 				</contentMiddle>
 			</Bar>
 		</customHeader>
@@ -13,35 +13,66 @@
 			<FlexBox id="panelFormBox" direction="Column" height="auto" justifyContent="Center" alignItems="Center"
 				class="sapUiTinyMarginTop sapUiSizeCompact">
 				<items>
-					<!-- Radio Button Section -->
-					<!--<FlexBox width="auto" id="RadioBtn" wrap="NoWrap" justifyContent="Center" alignItems="Center">
-						<RadioButtonGroup id="radioBtnlist" columns="4" select="onRadioButtonSelectList" class="styledRadioGroup">
-							<RadioButton id="fiscalYearWise" text="Fiscal Year Wise"/>
-							<RadioButton id="quaterlyWise" text="Quaterly Wise"/>
-							<RadioButton id="supplierDue" text="Supplier Due"/>
-							<RadioButton id="supplierDueQtrFy" text="Supplier Due QTR/FY"/>
-						</RadioButtonGroup>
-					</FlexBox>-->
 					<!-- Input Fields Section -->
 					<FlexBox width="auto" id="inputBoxes" wrap="NoWrap" justifyContent="Center" alignItems="Center">
-					    <HBox id="companyCodeMasterBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
+						<HBox id="companyCodeMasterBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
 							<Input id="_companyCodeInputId" type="Text" tooltip="Select from list" placeholder="Company Code" class="boldText roundedInput"
-								showValueHelp="true" showClearIcon="true" value="{globalData>/selectedCompanyCodeNamesDisplay}" valueHelpRequest="handleValueCompanyCodeMaster"
-								required="true" valueHelpOnly="true"/>
+								showValueHelp="true" showClearIcon="true" value="{globalData>/selectedCompanyCodeNamesDisplay}"
+								valueHelpRequest="handleValueCompanyCodeMaster" required="true" valueHelpOnly="true"/>
+						</HBox>
+						<HBox id="venderDatePickerBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
+							<DatePicker id="_venderDatePickerId" value="{globalData>/selectedVenderDate}" placeholder="Posting Date" required="true"
+								class="boldText roundedInput" change="onVenderDateChange" displayFormat="dd.MM.yyyy" valueFormat="yyyyMMdd"/>
+						</HBox>
+						<HBox id="venderYearPickerBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
+							<DatePicker id="_venderYearPickerId" value="{globalData>/selectedVenderYear}" placeholder="Fiscal Year" required="true"
+								class="boldText roundedInput" change="onVenderYearChange" displayFormat="yyyy" valueFormat="yyyy"/>
 						</HBox>
 						<HBox id="venderMasterBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
-							<Input id="_VenderInputId" type="Text" tooltip="Select from list" placeholder="Vender Code" class="boldText roundedInput"
+							<Input id="_VenderInputId" type="Text" tooltip="Select from list" placeholder="Bank Account" class="boldText roundedInput"
 								showValueHelp="true" showClearIcon="true" value="{globalData>/selectedVenderNamesDisplay}" valueHelpRequest="handleValueVenderMaster"
 								required="true" valueHelpOnly="true"/>
 						</HBox>
-						<HBox id="venderDatePickerBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
-							<DatePicker id="_venderDatePickerId" value="{globalData>/selectedVenderDate}" placeholder="Select Due Date" required="true"
-								class="boldText roundedInput" change="onVenderDateChange" displayFormat="dd.MM.yyyy" valueFormat="yyyyMMdd"/>
+						<!-- Month Dropdown -->
+						<HBox id="monthSelectionBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
+							<ComboBox id="_monthComboBoxId" placeholder="Select Month" selectedKey="{globalData>/selectedMonth}" class="boldText roundedInput"
+								width="180px" tooltip="Select a month">
+								<core:Item key="01" text="January"/>
+								<core:Item key="02" text="February"/>
+								<core:Item key="03" text="March"/>
+								<core:Item key="04" text="April"/>
+								<core:Item key="05" text="May"/>
+								<core:Item key="06" text="June"/>
+								<core:Item key="07" text="July"/>
+								<core:Item key="08" text="August"/>
+								<core:Item key="09" text="September"/>
+								<core:Item key="10" text="October"/>
+								<core:Item key="11" text="November"/>
+								<core:Item key="12" text="December"/>
+							</ComboBox>
 						</HBox>
 						<!-- Action Buttons (Search and Clear) -->
 						<HBox id="buttonBox" direction="Row" justifyContent="Center" alignItems="Center">
-							<Button id="searchData" icon="sap-icon://sales-order" press="getVendorHistoryBackendData" class="sapUiTinyMarginBegin" type="Accept" tooltip="Execute"/>
+							<Button id="searchData" icon="sap-icon://feeder-arrow" press="getVendorHistoryBackendData" class="sapUiTinyMarginBegin" type="Accept"
+								tooltip="Execute"/>
 							<Button id="clearData" icon="sap-icon://delete" press="clearListData" class="sapUiTinyMarginBegin" type="Reject" tooltip="Clear All Data"/>
+						</HBox>
+					</FlexBox>
+					<!-- ====================== RADIO BUTTON SECTION ====================== -->
+					<FlexBox width="auto" id="RadioBtnContainer" wrap="NoWrap" justifyContent="Center" alignItems="Center">
+						<!-- ===== Group 1: GL Related Options ===== -->
+						<HBox id="radioGroupGL" direction="Row" alignItems="Center" class="sapUiTinyMarginEnd">
+							<RadioButtonGroup id="radioBtnGroupGL" columns="2" select="onRadioButtonSelectList" class="styledRadioGroup">
+								<RadioButton id="fiscalYearWise" text="Incoming &amp; Outgoing GL"/>
+								<RadioButton id="quaterlyWise" text="Main GL"/>
+							</RadioButtonGroup>
+						</HBox>
+						<!-- ===== Group 2: Time Period Options ===== -->
+						<HBox id="radioGroupPeriod" direction="Row" alignItems="Center" class="sapUiTinyMarginBegin">
+							<RadioButtonGroup id="radioBtnGroupPeriod" columns="2" select="onRadioButtonSelectList" class="styledRadioGroup">
+								<RadioButton id="supplierDue" text="Monthly"/>
+								<RadioButton id="supplierDueQtrFy" text="Quarterly"/>
+							</RadioButtonGroup>
 						</HBox>
 					</FlexBox>
 				</items>
@@ -54,56 +85,44 @@
 					<IconTabBar id="iconTabBar" selectedKey="scenario1" select="onTabSelect" stretchContentHeight="true" class="beautifulTabBar">
 						<items>
 							<!-- Scenario 1 -->
-							<IconTabFilter key="scenario1" text="Supplier Analysis" icon="sap-icon://group" tooltip="Supplier Analysis" iconColor="Positive"
-								design="Horizontal">
+							<IconTabFilter key="scenario1" text="Incoming &amp; Outgoing GL(Monthly)" icon="sap-icon://journey-change" tooltip="Supplier Analysis"
+								iconColor="Positive" design="Horizontal">
 								<content>
 									<VBox visible="{globalData>/isChartFragment1Visible}">
-										<core:Fragment id="chartFragment1" fragmentName="com.infocus.venderApp.view.fragments.Charts.ChartFragment1" type="XML"/>
+										<core:Fragment id="chartFragment1" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment1" type="XML"/>
 									</VBox>
-									<!--<VBox visible="{globalData>/isChartFragment2Visible}">
-										<core:Fragment id="chartFragment2" fragmentName="com.infocus.venderApp.view.fragments.Charts.ChartFragment2" type="XML"/>
-									</VBox>-->
 								</content>
 							</IconTabFilter>
 							<IconTabSeparator/>
 							<!-- Scenario 2 -->
-							<!--<IconTabFilter key="scenario2" text="Top 5 Supplier Turnover" icon="sap-icon://customer" tooltip="Top 5 Supplier Turnover"
+							<IconTabFilter key="scenario2" text="Incoming &amp; Outgoing GL(Quaterly)" icon="sap-icon://journey-change" tooltip="Top 5 Supplier Turnover"
 								design="Horizontal">
 								<content>
 									<VBox visible="{globalData>/isChartFragment3Visible}">
-										<core:Fragment id="chartFragment3" fragmentName="com.infocus.purchaseApplication.view.fragments.Charts.ChartFragment3" type="XML"/>
-									</VBox>
-									<VBox visible="{globalData>/isChartFragment4Visible}">
-										<core:Fragment id="chartFragment4" fragmentName="com.infocus.purchaseApplication.view.fragments.Charts.ChartFragment4" type="XML"/>
+										<core:Fragment id="chartFragment3" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment2" type="XML"/>
 									</VBox>
 								</content>
 							</IconTabFilter>
-							<IconTabSeparator/>-->
+							<IconTabSeparator/>
 							<!-- Scenario 3 -->
-							<!--<IconTabFilter key="scenario3" text="Single Supplier Turnover" icon="sap-icon://employee-lookup" tooltip="Single Supplier Turnover"
-								iconColor="Critical" design="Horizontal">
+							<IconTabFilter key="scenario3" text="Bank Balance(Monthly)" icon="sap-icon://wallet" tooltip="Single Supplier Turnover"
+								iconColor="Critical" design="Horizontal" visible="false">
 								<content>
 									<VBox visible="{globalData>/isChartFragment5Visible}">
-										<core:Fragment id="chartFragment5" fragmentName="com.infocus.purchaseApplication.view.fragments.Charts.ChartFragment5" type="XML"/>
-									</VBox>
-									<VBox visible="{globalData>/isChartFragment6Visible}">
-										<core:Fragment id="chartFragment6" fragmentName="com.infocus.purchaseApplication.view.fragments.Charts.ChartFragment6" type="XML"/>
+										<core:Fragment id="chartFragment5" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment3" type="XML"/>
 									</VBox>
 								</content>
 							</IconTabFilter>
-							<IconTabSeparator/>-->
+							<IconTabSeparator/>
 							<!-- Scenario 4 -->
-							<!--<IconTabFilter key="scenario4" text="Purchase Turnover" icon="sap-icon://customer-financial-fact-sheet" tooltip="Purchase Turnover"
-								iconColor="Negative" design="Horizontal">
+							<IconTabFilter key="scenario4" text="Bank Balance(Quaterly)" icon="sap-icon://wallet" tooltip="Purchase Turnover"
+								iconColor="Negative" design="Horizontal" visible="false">
 								<content>
 									<VBox visible="{globalData>/isChartFragment7Visible}">
-										<core:Fragment id="chartFragment7" fragmentName="com.infocus.purchaseApplication.view.fragments.Charts.ChartFragment7" type="XML"/>
-									</VBox>
-									<VBox visible="{globalData>/isChartFragment8Visible}">
-										<core:Fragment id="chartFragment8" fragmentName="com.infocus.purchaseApplication.view.fragments.Charts.ChartFragment8" type="XML"/>
+										<core:Fragment id="chartFragment7" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment4" type="XML"/>
 									</VBox>
 								</content>
-							</IconTabFilter>-->
+							</IconTabFilter>
 						</items>
 					</IconTabBar>
 				</content>

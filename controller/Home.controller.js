@@ -1,21 +1,23 @@
 sap.ui.define([
-	"com/infocus/venderApp/controller/BaseController",
+	"com/infocus/ZBankApp/controller/BaseController",
 	"sap/ui/core/Fragment",
 	"sap/ui/model/Filter",
 	"sap/ui/model/FilterOperator",
 	"sap/ui/model/json/JSONModel",
 	"sap/m/MessageBox",
 	"sap/viz/ui5/api/env/Format",
-	"com/infocus/venderApp/libs/html2pdf.bundle",
+	"com/infocus/ZBankApp/libs/html2pdf.bundle",
 	"jquery.sap.global"
 ], function(BaseController, Fragment, Filter, FilterOperator, JSONModel, MessageBox, Format, html2pdf_bundle, jQuery) {
 	"use strict";
 
-	return BaseController.extend("com.infocus.venderApp.controller.Home", {
+	return BaseController.extend("com.infocus.ZBankApp.controller.Home", {
 
 		/*************** on Load Functions *****************/
 		onInit: function() {
 			this._initializeApp();
+			this.byId("_venderYearPickerId").setMinDate(new Date(2020, 0, 1));
+			this.byId("_venderYearPickerId").setMaxDate(new Date(2027, 11, 31));
 		},
 		_initializeApp: function() {
 			try {
@@ -32,7 +34,7 @@ sap.ui.define([
 			// Load both datasets in parallel
 			Promise.all([
 					/*this.getVenderMasterParametersData(),*/
-					this.getCompanyCodeMasterParametersData()
+					/*this.getCompanyCodeMasterParametersData()*/
 				])
 				.then(function() {
 					console.log("All master data loaded successfully.");
@@ -195,7 +197,7 @@ sap.ui.define([
 			if (!this._oVenderMasterDialog) {
 				this._oVenderMasterDialog = sap.ui.xmlfragment(
 					this.getView().getId() + "VenderMasterDialog",
-					"com.infocus.venderApp.view.dialogComponent.DialogVenderMaster",
+					"com.infocus.ZBankApp.view.dialogComponent.DialogVenderMaster",
 					this
 				);
 				this._oVenderMasterDialog.setModel(oVenderMasterModel);
@@ -246,7 +248,7 @@ sap.ui.define([
 			if (!this._oCompanyCodeMasterDialog) {
 				this._oCompanyCodeMasterDialog = sap.ui.xmlfragment(
 					this.getView().getId() + "CompanyCodeMasterDialog",
-					"com.infocus.venderApp.view.dialogComponent.DialogCompanyCodeMaster",
+					"com.infocus.ZBankApp.view.dialogComponent.DialogCompanyCodeMaster",
 					this
 				);
 				this._oCompanyCodeMasterDialog.setModel(oCompanyCodeMasterModel);

@@ -1,127 +1,56 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:table="sap.ui.table">
-    <table:Table id="idTable" class="greenTable" rows="{venderHistoryData>/}" selectionMode="None" visibleRowCount="10" width="100%" enableColumnReordering="false">
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:table="sap.ui.table">
+
+    <!-- ======================================================
+         MONTHLY AMOUNT SUMMARY TABLE (FULL-WIDTH, CLEAN VIEW)
+         ====================================================== -->
+    <table:Table
+        id="idMonthlyTable"
+        class="greenTable"
+        rows="{monthlyData>/}"
+        selectionMode="None"
+        visibleRowCount="10"
+        width="100%"
+        enableColumnReordering="false"
+        columnHeaderVisible="true">
+
         <table:columns>
 
-            <table:Column width="150px" sortProperty="lifnr" filterProperty="lifnr">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="Vendor Code" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
+            <!-- ========== Month ========== -->
+            <table:Column>
+                <Label text="Month" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
                 <table:template>
-                    <Text text="{venderHistoryData>lifnr}" wrapping="true"/>
+                    <Text text="{monthlyData>month}" wrapping="true"/>
                 </table:template>
             </table:Column>
 
-            <table:Column width="200px" sortProperty="name1" filterProperty="name1">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="Vendor Name" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
+            <!-- ========== Year ========== -->
+            <table:Column>
+                <Label text="Year" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
                 <table:template>
-                    <Text text="{venderHistoryData>name1}" wrapping="true"/>
+                    <Text text="{monthlyData>year}" wrapping="true"/>
                 </table:template>
             </table:Column>
 
-            <table:Column width="120px" sortProperty="netpr" filterProperty="netpr">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="PO Value" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
+            <!-- ========== Incoming Amount ========== -->
+            <table:Column>
+                <Label text="Incoming Amount" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
                 <table:template>
-                    <Text text="{venderHistoryData>netpr}" wrapping="true"/>
+                    <Text text="{monthlyData>incoming}" wrapping="true"/>
                 </table:template>
             </table:Column>
 
-            <table:Column width="120px" sortProperty="wrbtr" filterProperty="wrbtr">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="Delivered" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
+            <!-- ========== Outgoing Amount ========== -->
+            <table:Column>
+                <Label text="Outgoing Amount" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
                 <table:template>
-                    <Text text="{venderHistoryData>wrbtr}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="150px" sortProperty="netwr" filterProperty="netwr">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="Still to Deliver" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>netwr}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="150px" sortProperty="vend_adv" filterProperty="vend_adv">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="Vendor Advance" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>vend_adv}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="120px" sortProperty="creditor" filterProperty="creditor">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="Creditor" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>creditor}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="120px" sortProperty="lc" filterProperty="lc">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="LC" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>lc}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="150px" sortProperty="factoring" filterProperty="factoring">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="Factoring" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>factoring}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="120px" sortProperty="rxil" filterProperty="rxil">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="RXIL" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>rxil}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="120px" sortProperty="abg" filterProperty="abg">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="ABG" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>abg}" wrapping="true"/>
-                </table:template>
-            </table:Column>
-
-            <table:Column width="120px" sortProperty="pbg" filterProperty="pbg">
-                <HBox alignItems="Center" justifyContent="Start" class="sapUiTinyMargin">
-                    <Label text="PBG" class="sapUiTinyMargin"/>
-                    <core:Icon src="sap-icon://sorting-ranking" size="1rem" color="Information" tooltip="Sortable / Clickable"/>
-                </HBox>
-                <table:template>
-                    <Text text="{venderHistoryData>pbg}" wrapping="true"/>
+                    <Text text="{monthlyData>outgoing}" wrapping="true"/>
                 </table:template>
             </table:Column>
 
         </table:columns>
     </table:Table>
+
 </core:FragmentDefinition>

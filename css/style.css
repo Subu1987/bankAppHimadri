@@ -77,7 +77,7 @@ html .sapUiTableCtrl tr.sapUiTableRowSel > td {
 
 /* Make text bold and larger */
 .beautifulTabBar .sapMITBText {
-	font-size: 1rem;
+	font-size: 0.9rem;
 	font-weight: bold;
 	color: #333333;
 	text-align: center;
