@@ -1,0 +1,31 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="Z_INF_BANK_KDS_SRV" xml:lang="en" sap:schema-version="1">
+            <Annotation
+                xmlns="http://docs.oasis-open.org/odata/ns/edm" Term="Core.SchemaVersion" String="1.0.0"/>
+                <EntityType Name="Keydetails" sap:content-version="1">
+                    <Key>
+                        <PropertyRef Name="option"/>
+                    </Key>
+                    <Property Name="option" Type="Edm.String" Nullable="false" MaxLength="1" sap:unicode="false" sap:label="option" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                    <Property Name="bukrs" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="bukrs" sap:creatable="false" sap:updatable="false" sap:sortable="false"/>
+                    <Property Name="bukrs_name" Type="Edm.String" Nullable="false" MaxLength="25" sap:unicode="false" sap:label="bukrs_name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                    <Property Name="saknr_i" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="saknr_i" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                    <Property Name="saknr_o" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="saknr_o" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                    <Property Name="saknr_m" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="saknr_m" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                    <Property Name="bank_name" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="bank_name" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                </EntityType>
+                <EntityContainer Name="Z_INF_BANK_KDS_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                    <EntitySet Name="KeydetailsSet" EntityType="Z_INF_BANK_KDS_SRV.Keydetails" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                </EntityContainer>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/Z_INF_BANK_KDS_SRV/$metadata"/>
+                    <atom:link
+                        xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/Z_INF_BANK_KDS_SRV/$metadata"/>
+                    </Schema>
+                </edmx:DataServices>
+            </edmx:Edmx>

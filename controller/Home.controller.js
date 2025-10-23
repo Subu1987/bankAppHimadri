@@ -15,37 +15,39 @@ sap.ui.define([
 
 		/*************** on Load Functions *****************/
 		onInit: function() {
+
 			this._initializeApp();
-			this.byId("_venderYearPickerId").setMinDate(new Date(2020, 0, 1));
-			this.byId("_venderYearPickerId").setMaxDate(new Date(2027, 11, 31));
+
 		},
 		_initializeApp: function() {
 			try {
 				this._initializeAppData();
+				this._updateGlobalDataModel();
 			} catch (err) {
 				console.error("Error initializing the app:", err);
 				sap.m.MessageBox.error("An error occurred during app initialization. Please contact support.");
 			}
 		},
 		_initializeAppData: function() {
-			var that = this;
-			sap.ui.core.BusyIndicator.show(); // Show busy once
+			this.getBankAccountMasterParametersData();
+			this.getCompanyCodeMasterParametersData();
+		},
+		_updateGlobalDataModel: function() {
+			var oGlobalDataModel = this.getOwnerComponent().getModel("globalData");
+			if (!oGlobalDataModel) {
+				console.error("Global data model is not available.");
+				sap.m.MessageToast.show("Unable to access global data model.");
+				return;
+			}
 
-			// Load both datasets in parallel
-			Promise.all([
-					/*this.getVenderMasterParametersData(),*/
-					/*this.getCompanyCodeMasterParametersData()*/
-				])
-				.then(function() {
-					console.log("All master data loaded successfully.");
-				})
-				.catch(function(err) {
-					console.error("Error loading initial data:", err);
-					sap.m.MessageBox.error(err);
-				})
-				.finally(function() {
-					sap.ui.core.BusyIndicator.hide(); // Hide busy after all done
-				});
+			if (oGlobalDataModel) {
+				oGlobalDataModel.setProperty("/selectedTabText", "Incoming & Outgoing GL(Monthly)");
+				oGlobalDataModel.setProperty("/selectedGLType", "A");
+				oGlobalDataModel.setProperty("/selectedOption", "3");
+
+			} else {
+				console.error("Global data model is not available.");
+			}
 		},
 
 		/*************** validate Inputs *****************/
@@ -114,48 +116,11 @@ sap.ui.define([
 
 		/*************** get parameters data *****************/
 
-		getVenderMasterParametersData: function() {
-			var that = this;
-			var oModel = this.getOwnerComponent().getModel();
-			var oVenderMasterModel = this.getOwnerComponent().getModel("venderMasterData");
-			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
-			var aSelectedCompanyCodes = oGlobalData.selectedCompanyCodeIDs || [];
-			var sUrl = "/es_f4lifnrset";
-
-			return new Promise(function(resolve, reject) {
-				if (!oModel || !oVenderMasterModel) {
-					reject("Could not access required models for fetching Vender data.");
-					return;
-				}
-
-				// Apply filter (bukrs eq '1100')
-				var aFilters = [
-					new sap.ui.model.Filter("bukrs", sap.ui.model.FilterOperator.EQ, aSelectedCompanyCodes[0])
-				];
-
-				oModel.read(sUrl, {
-					filters: aFilters,
-					success: function(oResponse) {
-						var aResults = oResponse && oResponse.results ? oResponse.results : [];
-						aResults.sort(function(a, b) {
-							return parseInt(a.lifnr, 10) - parseInt(b.lifnr, 10);
-						});
-						oVenderMasterModel.setData(aResults || []);
-						console.log("Vender master data loaded:", aResults);
-						resolve();
-					},
-					error: function(oError) {
-						console.error("Error fetching Vender master data:", oError);
-						reject("Failed to fetch Vender master data.");
-					}
-				});
-			});
-		},
 		getCompanyCodeMasterParametersData: function() {
 			var that = this;
-			var oModel = this.getOwnerComponent().getModel();
+			var oModel = this.getOwnerComponent().getModel("parameterMasterModel");
 			var oCompanyCodeMasterModel = this.getOwnerComponent().getModel("companyCodeMasterData");
-			var sUrl = "/es_f4bukrsset";
+			var sUrl = "/KeydetailsSet";
 
 			return new Promise(function(resolve, reject) {
 				if (!oModel || !oCompanyCodeMasterModel) {
@@ -163,487 +128,174 @@ sap.ui.define([
 					return;
 				}
 
+				// Create OData filter: option eq '1'
+				var oFilter = new sap.ui.model.Filter("option", sap.ui.model.FilterOperator.EQ, "1");
+
 				oModel.read(sUrl, {
+					filters: [oFilter],
 					success: function(oResponse) {
 						var aResults = oResponse && oResponse.results ? oResponse.results : [];
 						oCompanyCodeMasterModel.setData(aResults || []);
-						console.log("Company Code master data loaded:", aResults);
-						resolve();
+						console.log("✅ Company Code master data loaded:", aResults);
+						resolve(aResults);
 					},
 					error: function(oError) {
-						console.error("Error fetching Company Code master data:", oError);
+						console.error("❌ Error fetching Company Code master data:", oError);
 						reject("Failed to fetch Company Code master data.");
 					}
 				});
 			});
 		},
-
-		/*************** Fragment handling *****************/
-
-		handleValueVenderMaster: function(oEvent) {
-			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
-			var aSelectedCompanyCodes = oGlobalData.selectedCompanyCodeIDs || [];
-
-			if (!aSelectedCompanyCodes.length) {
-				sap.m.MessageBox.error("Please select a Company Code before choosing a Vendor.");
-				return;
-			}
-
+		getBankAccountMasterParametersData: function() {
 			var that = this;
-			this._VenderInputId = oEvent.getSource().getId();
-			var oVenderMasterModel = this.getOwnerComponent().getModel("venderMasterData");
+			var oParameterModel = this.getOwnerComponent().getModel("parameterMasterModel");
+			var oBankAccountMasterModel = this.getOwnerComponent().getModel("bankAccountMasterData");
+			var sUrl = "/KeydetailsSet";
 
-			// Lazy-load dialog if not already created
-			if (!this._oVenderMasterDialog) {
-				this._oVenderMasterDialog = sap.ui.xmlfragment(
-					this.getView().getId() + "VenderMasterDialog",
-					"com.infocus.ZBankApp.view.dialogComponent.DialogVenderMaster",
-					this
-				);
-				this._oVenderMasterDialog.setModel(oVenderMasterModel);
-				this.getView().addDependent(this._oVenderMasterDialog);
-			}
-
-			// Step 1: Show global busy indicator
-			sap.ui.core.BusyIndicator.show(0); // 0 = immediately
-
-			// Step 2: Normalize model data
-			var aExistingData = oVenderMasterModel.getData();
-			if (!Array.isArray(aExistingData)) {
-				if (aExistingData && typeof aExistingData === "object") {
-					aExistingData = Object.values(aExistingData);
-				} else {
-					aExistingData = [];
+			return new Promise(function(resolve, reject) {
+				if (!oParameterModel || !oBankAccountMasterModel) {
+					reject("Could not access required models for fetching Bank Account data.");
+					return;
 				}
-			}
 
-			// Step 3: Check if data for selected company exists
-			var bDataForSelectedCompany = false;
-			for (var i = 0; i < aExistingData.length; i++) {
-				if (aExistingData[i].bukrs === aSelectedCompanyCodes[0]) {
-					bDataForSelectedCompany = true;
-					break;
-				}
-			}
+				// Create OData filter: option eq '1'
+				var oFilter = new sap.ui.model.Filter("option", sap.ui.model.FilterOperator.EQ, "2");
 
-			// Step 4: Fetch data only if needed
-			var pData = (aExistingData.length === 0 || !bDataForSelectedCompany) ? this.getVenderMasterParametersData() : Promise.resolve();
-
-			pData
-				.then(function() {
-					that._oVenderMasterDialog.open();
-				})
-				.catch(function(err) {
-					sap.m.MessageBox.error(err);
-				})
-				.finally(function() {
-					sap.ui.core.BusyIndicator.hide(); // hide global busy
+				oParameterModel.read(sUrl, {
+					filters: [oFilter],
+					success: function(oResponse) {
+						var aResults = oResponse && oResponse.results ? oResponse.results : [];
+						oBankAccountMasterModel.setData(aResults || []);
+						console.log("✅ Bank Account data loaded:", aResults);
+						resolve(aResults);
+					},
+					error: function(oError) {
+						console.error("❌ Error fetching  Bank Account master data:", oError);
+						reject("Failed to fetch Bank Account master data.");
+					}
 				});
-		},
-		handleValueCompanyCodeMaster: function(oEvent) {
-			var that = this;
-			this._CompanyCodeInputId = oEvent.getSource().getId();
-			var oCompanyCodeMasterModel = this.getOwnerComponent().getModel("companyCodeMasterData");
-
-			if (!this._oCompanyCodeMasterDialog) {
-				this._oCompanyCodeMasterDialog = sap.ui.xmlfragment(
-					this.getView().getId() + "CompanyCodeMasterDialog",
-					"com.infocus.ZBankApp.view.dialogComponent.DialogCompanyCodeMaster",
-					this
-				);
-				this._oCompanyCodeMasterDialog.setModel(oCompanyCodeMasterModel);
-				this.getView().addDependent(this._oCompanyCodeMasterDialog);
-			}
-
-			// Show global busy indicator
-			sap.ui.core.BusyIndicator.show(0);
-
-			var aExistingData = oCompanyCodeMasterModel.getData();
-			if (!Array.isArray(aExistingData)) {
-				if (aExistingData && typeof aExistingData === "object") {
-					aExistingData = Object.values(aExistingData);
-				} else {
-					aExistingData = [];
-				}
-			}
-
-			var pData = (aExistingData.length === 0) ? this.getCompanyCodeMasterParametersData() : Promise.resolve();
-
-			pData
-				.then(function() {
-					that._oCompanyCodeMasterDialog.open();
-				})
-				.catch(function(err) {
-					sap.m.MessageBox.error(err);
-				})
-				.finally(function() {
-					sap.ui.core.BusyIndicator.hide();
-				});
-		},
-
-		/*************** search value within fragment *****************/
-
-		onSearchVenderMaster: function(oEvent) {
-			var sQuery = oEvent.getParameter("newValue");
-
-			// Get the correct fragment ID
-			var sFragmentId = this.getView().getId() + "VenderMasterDialog";
-
-			var oList = Fragment.byId(sFragmentId, "idVenderMasterList");
-			if (!oList) return;
-
-			var oBinding = oList.getBinding("items");
-			if (!oBinding) return;
-
-			var aFilters = [];
-			if (sQuery) {
-				var oFilter1 = new sap.ui.model.Filter("lifnr", sap.ui.model.FilterOperator.Contains, sQuery);
-				var oFilter2 = new sap.ui.model.Filter("name1", sap.ui.model.FilterOperator.Contains, sQuery);
-				aFilters.push(new sap.ui.model.Filter({
-					filters: [oFilter1, oFilter2],
-					and: false
-				}));
-			}
-
-			oBinding.filter(aFilters);
-		},
-		onSearchCompanyCodeMaster: function(oEvent) {
-			var sQuery = oEvent.getParameter("newValue");
-
-			// Get the correct fragment ID
-			var sFragmentId = this.getView().getId() + "CompanyCodeMasterDialog";
-
-			var oList = Fragment.byId(sFragmentId, "idCompanyCodeMasterList");
-			if (!oList) return;
-
-			var oBinding = oList.getBinding("items");
-			if (!oBinding) return;
-
-			var aFilters = [];
-			if (sQuery) {
-				var oFilter1 = new sap.ui.model.Filter("bukrs", sap.ui.model.FilterOperator.Contains, sQuery);
-				var oFilter2 = new sap.ui.model.Filter("butxt", sap.ui.model.FilterOperator.Contains, sQuery);
-				aFilters.push(new sap.ui.model.Filter({
-					filters: [oFilter1, oFilter2],
-					and: false
-				}));
-			}
-
-			oBinding.filter(aFilters);
-		},
-
-		/*************** set the each property to globalData & reflect data in input field & Date Picker *****************/
-
-		onToggleSelectAll: function(oEvent) {
-			var oButton = oEvent.getSource();
-			var sFragmentId = this.getView().getId() + "VenderMasterDialog";
-			var oList = Fragment.byId(sFragmentId, "idVenderMasterList");
-
-			if (!oList) return;
-
-			var bSelectAll = oButton.getText() === "Select All";
-			oList.getItems().forEach(function(oItem) {
-				oItem.setSelected(bSelectAll);
 			});
-
-			// Update button text
-			oButton.setText(bSelectAll ? "Deselect All" : "Select All");
-
-			// Update global model with new selections
-			this._updateSelectedVenders(oList);
 		},
-		onSelectionChangeVenderMaster: function(oEvent) {
-			var oList = oEvent.getSource();
-			this._updateSelectedVenders(oList);
-		},
-		_updateSelectedVenders: function(oList) {
+		
+		/*************** radio Button & drop down selection  *****************/
+
+		onRadioButtonSelectPeriod: function(oEvent) {
 			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
-			var aSelectedVenderIDs = [];
-			var aSelectedVenderNames = [];
+			var oSelectedIndex = oEvent.getParameter("selectedIndex");
+			var oMonthBox = this.byId("monthSelectionBox");
+			var oQuarterBox = this.byId("quarterSelectionBox");
 
-			var aAllItems = oList.getItems();
-			aAllItems.forEach(function(oItem) {
-				if (oItem.getSelected()) {
-					aSelectedVenderIDs.push(oItem.getTitle());
-					aSelectedVenderNames.push(oItem.getDescription());
-				}
-			});
-
-			// ✅ Always update the global model with current selection
-			oGlobalModel.setProperty("/selectedVenderNames", aSelectedVenderNames);
-			oGlobalModel.setProperty("/selectedVenderIDs", aSelectedVenderIDs);
-			oGlobalModel.setProperty("/selectedVenderNamesDisplay", aSelectedVenderIDs.join(", "));
-
-			// 🔄 Sync button text with selection state
-			var sFragmentId = this.getView().getId() + "VenderMasterDialog";
-			var oSelectAllBtn = Fragment.byId(sFragmentId, "idSelectAllBtn");
-
-			if (oSelectAllBtn) {
-				if (aAllItems.length > 0 && aSelectedVenderIDs.length === aAllItems.length) {
-					oSelectAllBtn.setText("Deselect All");
-				} else {
-					oSelectAllBtn.setText("Select All");
-				}
+			if (oSelectedIndex === 0) { // Monthly selected
+				oMonthBox.setVisible(true);
+				oQuarterBox.setVisible(false);
+				oGlobalModel.setProperty("/selectedOption", "3");
+			} else if (oSelectedIndex === 1) { // Quarterly selected
+				oMonthBox.setVisible(false);
+				oQuarterBox.setVisible(true);
+				oGlobalModel.setProperty("/selectedOption", "4");
 			}
 		},
-		onConfirmVenderMaster: function() {
+		onRadioButtonSelectGL: function(oEvent) {
 			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
+			var oSelectedIndex = oEvent.getParameter("selectedIndex");
+			var oIncomingOutgoingPanel = this.byId("panelIncomingOutgoingViewBox");
+			var oMainGLPanel = this.byId("panelMainViewBox");
 
-			var aSelectedNamesDisplay = oGlobalModel.getProperty("/selectedVenderNamesDisplay") || "";
-			var aSelectedNames = oGlobalModel.getProperty("/selectedVenderNames") || [];
-			var aSelectedIDs = oGlobalModel.getProperty("/selectedVenderIDs") || [];
-
-			console.log("Confirmed selected IDs:", aSelectedIDs);
-			console.log("Confirmed selected Names:", aSelectedNames);
-			console.log("Confirmed selected Display Names:", aSelectedNamesDisplay);
-
-			oGlobalModel.refresh(true);
-
-			this._resetVenderMasterDialog();
-			this._oVenderMasterDialog.close();
-		},
-		onCloseVenderMaster: function() {
-			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
-			oGlobalModel.setProperty("/selectedVenderIDs", []);
-			oGlobalModel.setProperty("/selectedVenderNames", []);
-			oGlobalModel.setProperty("/selectedVenderNamesDisplay", "");
-
-			this._resetVenderMasterDialog();
-			this._oVenderMasterDialog.close();
-		},
-		_resetVenderMasterDialog: function() {
-			var sFragmentId = this.getView().getId() + "VenderMasterDialog";
-			var oList = Fragment.byId(sFragmentId, "idVenderMasterList");
-			var oSearchField = Fragment.byId(sFragmentId, "idVenderSearchField");
-			var oSelectAllBtn = Fragment.byId(sFragmentId, "idSelectAllBtn");
-
-			// Clear Search
-			if (oSearchField) {
-				oSearchField.setValue("");
-				this.onSearchVenderMaster({
-					getParameter: function() {
-						return "";
-					}
-				});
+			if (oSelectedIndex === 0) {
+				oIncomingOutgoingPanel.setVisible(true);
+				oMainGLPanel.setVisible(false);
+				oGlobalModel.setProperty("/selectedGLType", "A");
+				oGlobalModel.setProperty("/selectedTabText", "Incoming & Outgoing GL(Monthly)");
+			} else {
+				oIncomingOutgoingPanel.setVisible(false);
+				oMainGLPanel.setVisible(true);
+				oGlobalModel.setProperty("/selectedGLType", "B");
+				oGlobalModel.setProperty("/selectedTabText", "Main GL(Monthly)");
 			}
 
-			// Clear selections
-			if (oList) {
-				oList.getItems().forEach(function(oItem) {
-					oItem.setSelected(false);
-				});
-			}
-
-			// Reset button text
-			if (oSelectAllBtn) {
-				oSelectAllBtn.setText("Select All");
-			}
 		},
 
-		onSelectionChangeCompanyCodeMaster: function(oEvent) {
-			var oList = oEvent.getSource();
-			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
-			var aSelectedCompanyCodeIDs = oGlobalModel.getProperty("/selectedCompanyCodeIDs") || [];
-			var aSelectedCompanyCodeNames = oGlobalModel.getProperty("/selectedCompanyCodeNames") || [];
+		/*************** get the Backend data for GL  *****************/
 
-			var aAllItems = oList.getItems();
-			aAllItems.forEach(function(oItem) {
-				var sID = oItem.getTitle();
-				var sName = oItem.getDescription();
-
-				// If item is selected
-				if (oItem.getSelected()) {
-					if (!aSelectedCompanyCodeIDs.includes(sID)) {
-						aSelectedCompanyCodeIDs.push(sID);
-						aSelectedCompanyCodeNames.push(sName);
-					}
-				} else {
-					// If item is unselected
-					var index = aSelectedCompanyCodeIDs.indexOf(sID);
-					if (index !== -1) {
-						aSelectedCompanyCodeIDs.splice(index, 1);
-						aSelectedCompanyCodeNames.splice(index, 1);
-					}
-				}
-			});
-
-			oGlobalModel.setProperty("/selectedCompanyCodeNames", aSelectedCompanyCodeNames);
-			oGlobalModel.setProperty("/selectedCompanyCodeIDs", aSelectedCompanyCodeIDs);
-			oGlobalModel.setProperty("/selectedCompanyCodeNamesDisplay", aSelectedCompanyCodeIDs.join(", "));
-		},
-		onConfirmCompanyCodeMaster: function() {
-			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
-
-			// Values are already being maintained correctly in the model
-			var aSelectedNamesDisplay = oGlobalModel.getProperty("/selectedCompanyCodeNamesDisplay") || "";
-			var aSelectedNames = oGlobalModel.getProperty("/selectedCompanyCodeNames") || [];
-			var aSelectedIDs = oGlobalModel.getProperty("/selectedCompanyCodeIDs") || [];
-
-			// You can now directly use these for any processing or display
-			console.log("Confirmed selected IDs:", aSelectedIDs);
-			console.log("Confirmed selected Names:", aSelectedNames);
-			console.log("Confirmed selected Display Names:", aSelectedNamesDisplay);
-
-			oGlobalModel.refresh(true);
-
-			this._resetCompanyCodeMasterDialog();
-			this._oCompanyCodeMasterDialog.close();
-		},
-		onCloseCompanyCodeMaster: function() {
-			// Clear global model selections
-			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
-			oGlobalModel.setProperty("/selectedCompanyCodeIDs", []);
-			oGlobalModel.setProperty("/selectedCompanyCodeNames", []);
-			oGlobalModel.setProperty("/selectedCompanyCodeNamesDisplay", "");
-
-			this._resetCompanyCodeMasterDialog();
-			this._oCompanyCodeMasterDialog.close();
-		},
-		_resetCompanyCodeMasterDialog: function() {
-			// Get the correct fragment ID
-			var sFragmentId = this.getView().getId() + "CompanyCodeMasterDialog";
-
-			var oList = Fragment.byId(sFragmentId, "idCompanyCodeMasterList");
-			var oSearchField = Fragment.byId(sFragmentId, "idCompanyCodeSearchField");
-
-			// Clear Search
-			if (oSearchField) {
-				oSearchField.setValue("");
-
-				// Manually trigger the liveChange event handler with empty value
-				this.onSearchCompanyCodeMaster({
-					getParameter: function() {
-						return "";
-					}
-				});
-			}
-
-			// Clear selections
-			if (oList) {
-				oList.getItems().forEach(function(oItem) {
-					oItem.setSelected(false);
-				});
-			}
-		},
-
-		onVenderDateChange: function(oEvent) {
-			var oDatePicker = oEvent.getSource();
-			var sValue = oEvent.getParameter("value"); // formatted as yyyyMMdd (because of valueFormat)
-			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
-
-			if (!sValue) {
-				// If cleared, reset the model value
-				oGlobalModel.setProperty("/selectedVenderDate", null);
-				return;
-			}
-
-			// Optional: validate date
-			var oDate = oDatePicker.getDateValue();
-			if (!oDate) {
-				sap.m.MessageToast.show("Invalid date selected. Please try again.");
-				oGlobalModel.setProperty("/selectedVenderDate", null);
-				return;
-			}
-
-			// Store in model (already yyyyMMdd due to valueFormat)
-			oGlobalModel.setProperty("/selectedVenderDate", sValue);
-		},
-
-		/*************** get the Backend data for Vender  *****************/
-
-		getVendorHistoryBackendData: function() {
-			var that = this;
-			// Check Input Validation
-			if (!this.validateInputs()) {
-				return;
-			}
-
+		_buildGLFilters: function () {
+                var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
+                var filters = [];
+            
+                var {
+                    selectedGLType,
+                    selectedOption,
+                    selectedCompanyCode,
+                    selectedFiscalYear,
+                    selectedBankAccount,
+                    selectedMonth,
+                    selectedQuarter
+                } = oGlobalData;
+            
+                var Filter = sap.ui.model.Filter;
+                var FilterOperator = sap.ui.model.FilterOperator;
+            
+                // Helper to always add filters (even for empty values)
+                var addFilter = (path, value) => {
+                    filters.push(new Filter(path, FilterOperator.EQ, value || ""));
+                };
+            
+                // 🔹 Common filters
+                addFilter("bukrs", selectedCompanyCode);
+                addFilter("gjahr", selectedFiscalYear);
+                addFilter("bank_name", selectedBankAccount);
+            
+                // 🔹 Conditional filters for GL Type & Option
+                if (["A", "B"].includes(selectedGLType) && ["3", "4"].includes(selectedOption)) {
+                    var isMonthly = selectedOption === "3";
+            
+                    // Always include both period & quarter (even if one is empty)
+                    addFilter("period", isMonthly ? selectedMonth : "");
+                    addFilter("quarter", isMonthly ? "" : selectedQuarter);
+                    addFilter("checkbox", selectedGLType);
+                    addFilter("option", selectedOption);
+                }
+            
+                return filters;
+            },
+		getGLBackendData: function() {
 			var oModel = this.getOwnerComponent().getModel();
-			var oVendorHistoryModel = this.getOwnerComponent().getModel("venderHistoryData");
 			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
-
-			if (!oModel || !oVendorHistoryModel || !oGlobalData) {
-				console.error("Required models are not available.");
-				sap.m.MessageBox.error("Could not access required models for fetching vendor history data.");
-				return;
-			}
-
-			var sCompanyCode = oGlobalData.selectedCompanyCodeIDs || [];
-			var sVenderCode = oGlobalData.selectedVenderIDs || [];
-			var sVenderDate = oGlobalData.selectedVenderDate;
-
-			// Build filters
-			var aFilters = this._buildVendorHistoryFilters(sCompanyCode, sVenderCode, sVenderDate);
+			var oGLlistModel = this.getOwnerComponent().getModel("GLMasterData");
+			var filters = this._buildGLFilters();
 
 			sap.ui.core.BusyIndicator.show();
 
-			oModel.read("/es_vend_hstset", {
-				filters: aFilters,
-				success: function(oResponse) {
+			oModel.read("/GLBalanceSet", {
+				filters,
+				success: (response) => {
+					var oData = response.results || [];
+					console.log("GL Data:", oData);
+                    
+                    if(oGlobalData.selectedGLType === "A"){
+                        oGLlistModel.setProperty("/inOutGLData", oData);
+                    }else{
+                        oGLlistModel.setProperty("/mainGLData", oData);
+                    }
+					
+					console.log(oGLlistModel);
 					sap.ui.core.BusyIndicator.hide();
 
-					var aResults = (oResponse && oResponse.results) ? oResponse.results : [];
-
-					// Optional sorting by lifnr
-					if (aResults.length > 0 && aResults[0].lifnr) {
-						aResults.sort(function(a, b) {
-							return parseInt(a.lifnr, 10) - parseInt(b.lifnr, 10);
-						});
+					if (!oData.length) {
+						sap.m.MessageBox.information("There are no data available!");
 					}
-
-					// Convert values for each item
-					aResults = aResults.map(function(item) {
-						return that.convertValuesToLacs(item); // 👈 use the helper
-					});
-
-					oVendorHistoryModel.setData(aResults || []);
-					console.log("Vendor history data loaded:", aResults);
 				},
-				error: function(oError) {
+				error: (error) => {
 					sap.ui.core.BusyIndicator.hide();
-					console.error("Error fetching vendor history data:", oError);
+					console.error(error);
 
-					var sErrorMessage = "Failed to fetch vendor history data.";
 					try {
-						var oErrorObj = JSON.parse(oError.responseText);
-						if (oErrorObj && oErrorObj.error && oErrorObj.error.message && oErrorObj.error.message.value) {
-							sErrorMessage = oErrorObj.error.message.value;
-						}
-					} catch (e) {
-						console.warn("Error parsing error response JSON:", e);
+						var errorMsg = JSON.parse(error.responseText).error.message.value;
+						sap.m.MessageBox.error(errorMsg);
+					} catch {
+						sap.m.MessageBox.error("An unexpected error occurred.");
 					}
-
-					sap.m.MessageBox.error(sErrorMessage);
 				}
 			});
-		},
-		_buildVendorHistoryFilters: function(sCompanyCode, aVenderCodes, sVenderDate) {
-			var aFilters = [];
-
-			// Company Code filter
-			if (sCompanyCode) {
-				aFilters.push(new sap.ui.model.Filter("bukrs", sap.ui.model.FilterOperator.EQ, sCompanyCode));
-			}
-
-			// Vendor filter (multiple OR conditions)
-			if (aVenderCodes && aVenderCodes.length > 0) {
-				var aVendorFilters = aVenderCodes.map(function(sCode) {
-					return new sap.ui.model.Filter("lifnr", sap.ui.model.FilterOperator.EQ, sCode);
-				});
-
-				// OR condition for vendors
-				aFilters.push(new sap.ui.model.Filter({
-					filters: aVendorFilters,
-					and: false
-				}));
-			}
-
-			// Date filter
-			if (sVenderDate) {
-				aFilters.push(new sap.ui.model.Filter("budat", sap.ui.model.FilterOperator.LE, sVenderDate));
-			}
-
-			return aFilters;
 		},
 
 		/*************** helper function  *****************/
@@ -670,8 +322,8 @@ sap.ui.define([
 			return item;
 		},
 		generateSupplierShort: function(item) {
-			const words = item.supplier.split(" ");
-			const abbreviation = words
+			var words = item.supplier.split(" ");
+			var abbreviation = words
 				.filter(w => w.length > 2 && w[0] === w[0].toUpperCase())
 				.map(w => w[0])
 				.join("")
@@ -684,8 +336,8 @@ sap.ui.define([
 		/*************** Clear data from all input fields,radio button & model make it default  *****************/
 
 		clearListData: function() {
-			const that = this;
-			const oView = that.getView();
+			var that = this;
+			var oView = that.getView();
 
 			sap.m.MessageBox.confirm("Are you sure you want to clear all data?", {
 				onClose: function(oAction) {
@@ -693,14 +345,14 @@ sap.ui.define([
 					if (oAction === sap.m.MessageBox.Action.OK) {
 
 						// Clear input fields
-						const aInputIds = [
+						var aInputIds = [
 							"_companyCodeInputId",
 							"_VenderInputId",
 							"_venderDatePickerId"
 						];
 
 						aInputIds.forEach((sId) => {
-							const oControl = that.byId(sId);
+							var oControl = that.byId(sId);
 							if (oControl) {
 								if (oControl.isA("sap.m.DatePicker")) {
 									oControl.setDateValue(null);
@@ -725,7 +377,7 @@ sap.ui.define([
 						oGlobalDataModel.setProperty("/selectedCompanyCodeIDs", "");
 
 						// Define model reset map
-						const oModelResetMap = {
+						var oModelResetMap = {
 
 							// Supplier Due models (reset OData results)
 							venderMasterData: ["/"],
@@ -737,7 +389,7 @@ sap.ui.define([
 
 						// Reset data in each model
 						Object.keys(oModelResetMap).forEach((sModelName) => {
-							const oModel = that.getOwnerComponent().getModel(sModelName);
+							var oModel = that.getOwnerComponent().getModel(sModelName);
 							if (oModel) {
 								oModelResetMap[sModelName].forEach((sPath) => {
 									oModel.setProperty(sPath, []);
@@ -747,6 +399,157 @@ sap.ui.define([
 					}
 				}
 			});
+		},
+
+		/*************** chart function & plotting the chart Incoming & Outgoing GL data  *****************/
+
+		generateColorMapByIncomingOutgoingGL: function(data, sSelectedTabTextSupplierDue) {
+			const colorMap = {};
+			let uniqueKeys = [];
+
+			// Choose key format based on selected tab
+			if (sSelectedTabTextSupplierDue === "Total Outstanding") {
+				uniqueKeys = [...new Set(data.map(item => item.name1))];
+			} else {
+				uniqueKeys = [...new Set(data.map(item => `${item.name1}`))];
+			}
+
+			// Generate HSL colors based on index
+			uniqueKeys.forEach((key, i) => {
+				const color = `hsl(${(i * 43) % 360}, 70%, 50%)`;
+				colorMap[key] = color;
+			});
+
+			return {
+				colorMap
+			};
+		},
+		bindChartColorRulesByIncomingOutgoingGL: function(sFragmentId, oData) {
+			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
+			var sSelectedTabTextSupplierDue = oGlobalModel.getProperty("/selectedTabTextSupplierDue");
+			var oVizFrameSupplierDue = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idVizFrameSupplierDue");
+
+			if (!oVizFrameSupplierDue) {
+				console.warn("VizFrame not found for Fragment ID:", sFragmentId);
+				return;
+			}
+
+			var {
+				colorMap
+			} = this.generateColorMapBySupplierDue(oData, sSelectedTabTextSupplierDue);
+
+			var rules = [];
+
+			if (sSelectedTabTextSupplierDue === "Total Outstanding") {
+				rules = oData.map(item => ({
+					dataContext: {
+						"Amount": item.amount
+					},
+					properties: {
+						color: colorMap[item.amount]
+					}
+				}));
+			} else {
+				rules = oData.map(item => {
+					const key = `${item.name1}`;
+					return {
+						dataContext: {
+							"Supplier Name": item.name1,
+							/*"Amount": item.amount*/
+						},
+						properties: {
+							color: colorMap[key]
+						}
+					};
+				});
+			}
+
+			oVizFrameSupplierDue.setVizProperties({
+				title: {
+					visible: true,
+					text: "Supplier Due As on Date"
+				},
+				plotArea: {
+					dataPointStyle: {
+						rules
+					},
+					dataLabel: {
+						visible: true,
+					},
+					drawingEffect: "glossy"
+				},
+				tooltip: {
+					visible: true
+				},
+				interaction: {
+					selectability: {
+						mode: "multiple"
+					},
+				},
+				categoryAxis: {
+					label: {
+						visible: true,
+						allowMultiline: true,
+						linesOfWrap: 4,
+						overlapBehavior: "wrap",
+						rotation: 0,
+						angle: 0,
+						maxWidth: 200,
+						truncatedLabelRatio: 0.9,
+						style: {
+							fontSize: "10px"
+						}
+					}
+				},
+				valueAxis: {
+					label: {
+						visible: true
+					}
+				}
+			});
+
+			// Use bind to pass sFragmentId and call _onChartSelect
+			/*oVizFrameSupplierDue.attachSelectData(this._onChartSelectSupplierDue.bind(this, sFragmentId));*/
+
+		},
+		_onChartSelectSupplierDue: function(sFragmentId, oEvent) {
+			var oVizFrameSupplierDue = oEvent.getSource();
+			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idPopOverAllSupplierDue");
+
+			if (!oPopover) {
+				console.warn("Popover not found for Fragment ID:", sFragmentId)
+				return;
+			}
+
+			// Get selected data from the event (it will be in the 'data' parameter of the event)
+			var aSelectedData = oEvent.getParameter("data");
+
+			if (!aSelectedData || aSelectedData.length === 0) {
+				console.warn("No data selected");
+				return;
+			}
+
+			// We assume single selection and access the first item in the selected data array
+			var oSelectedItem = aSelectedData[0];
+
+			// Directly get the data from the selected item
+			var oDataContext = oSelectedItem.data; // Directly access the data (it may not need 'data.data')
+
+			// Assuming you are accessing Supplier Name, Fiscal Year, and Turnover
+			var sSupplier = oDataContext["Supplier Name"];
+			var sAmount = oDataContext["Amount (₹ Cr)"]; // Adjust the field name as necessary
+
+			// Create a JSON model to hold the data for the Popover
+			var oPopoverModel = new sap.ui.model.json.JSONModel({
+				supplier: sSupplier,
+				amount: sAmount
+			});
+
+			// Set the model on the Popover
+			oPopover.setModel(oPopoverModel);
+
+			// Connect the Popover to the VizFrame
+			oPopover.connect(oVizFrameSupplierDue.getVizUid());
 		},
 
 	});

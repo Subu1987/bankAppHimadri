@@ -25,10 +25,10 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "DEV",
+        "name": "HMD",
         "entryPath": "/sap/opu/odata"
       },
-      "description": "DEV"
+      "description": "HMD"
     },
     {
       "path": "/sap/bc/ui2/start_up",

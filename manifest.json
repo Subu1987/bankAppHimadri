@@ -13,7 +13,24 @@
 			"id": "servicecatalog.connectivityComponent",
 			"version": "0.0.0"
 		},
-		"dataSources": {}
+		"dataSources": {
+			"mainService": {
+				"uri": "/sap/opu/odata/sap/Z_INF_BANK_FIORI_DASHBOARD_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/Z_INF_BANK_FIORI_DASHBOARD_SRV/metadata.xml"
+				}
+			},
+			"parameterMasterService": {
+				"uri": "/sap/opu/odata/sap/Z_INF_BANK_KDS_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/Z_INF_BANK_KDS_SRV/metadata.xml"
+				}
+			}
+		}
 	},
 	"sap.ui": {
 		"technology": "UI5",
@@ -72,16 +89,23 @@
 					"defaultBindingMode": "TwoWay"
 				}
 			},
+			"parameterMasterModel": {
+				"dataSource": "parameterMasterService",
+				"preload": true,
+				"settings": {
+					"useBatch": false
+				}
+			},
 			"globalData": {
 				"type": "sap.ui.model.json.JSONModel"
 			},
-			"venderHistoryData": {
-				"type": "sap.ui.model.json.JSONModel"
-			},
-			"venderMasterData": {
+			"bankAccountMasterData": {
 				"type": "sap.ui.model.json.JSONModel"
 			},
 			"companyCodeMasterData": {
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"GLMasterData": {
 				"type": "sap.ui.model.json.JSONModel"
 			}
 		},

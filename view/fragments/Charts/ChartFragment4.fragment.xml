@@ -1,48 +1,103 @@
 <core:FragmentDefinition
-    xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:table="sap.ui.table">
+    xmlns:m="sap.m"
+    xmlns:table="sap.ui.table"
+    xmlns:suite="sap.suite.ui.commons"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:vizData="sap.viz.ui5.data"
+    xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds">
 
     <!-- ======================================================
-         MONTHLY BANK BALANCE TABLE (FULL-WIDTH, CLEAN VIEW)
+         QUATERLY BANK BALANCE VIEW (CHART + TABLE)
          ====================================================== -->
-    <table:Table
-        id="idMonthlyTable"
-        class="greenTable"
-        rows="{monthlyData>/}"
-        selectionMode="None"
-        visibleRowCount="10"
-        width="100%"
-        enableColumnReordering="false"
-        columnHeaderVisible="true">
+    <suite:ChartContainer
+        id="chartContainerMonthly"
+        showFullScreen="true"
+        showPersonalization="false"
+        autoAdjustHeight="false"
+        showLegendButton="false"
+        title="{globalData>/selectedTabText}">
 
-        <table:columns>
+        <suite:content>
 
-            <!-- ========== Month ========== -->
-            <table:Column width="33%">
-                <Label text="Month" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
-                <table:template>
-                    <Text text="{monthlyData>month}" wrapping="true"/>
-                </table:template>
-            </table:Column>
+            <!-- ================= Chart View ================= -->
+            <suite:ChartContainerContent icon="sap-icon://bar-chart" title="Chart View">
+                <suite:content>
+                    <viz:VizFrame
+                        id="idMonthlyVizFrame"
+                        vizType="column"
+                        height="380px"
+                        width="100%"
+                        uiConfig="{applicationSet:'fiori'}">
 
-            <!-- ========== Year ========== -->
-            <table:Column width="33%">
-                <Label text="Year" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
-                <table:template>
-                    <Text text="{monthlyData>year}" wrapping="true"/>
-                </table:template>
-            </table:Column>
+                        <!-- Popover for tooltip -->
+                        <viz:dependents>
+                            <viz:Popover id="idPopOverMonthly"></viz:Popover>
+                        </viz:dependents>
 
-            <!-- ========== Bank Balance ========== -->
-            <table:Column width="34%">
-                <Label text="Bank Balance" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
-                <table:template>
-                    <Text text="{monthlyData>balance}" wrapping="true"/>
-                </table:template>
-            </table:Column>
+                        <!-- Data Binding -->
+                        <viz:dataset>
+                            <vizData:FlattenedDataset data="{GLMasterData>/mainGLData}">
+                                <vizData:dimensions>
+                                    <vizData:DimensionDefinition name="Month" value="{GLMasterData>quarter}"/>
+                                    <vizData:DimensionDefinition name="Year" value="{GLMasterData>gjahr}"/>
+                                </vizData:dimensions>
+                                <vizData:measures>
+                                    <vizData:MeasureDefinition name="Bank Balance" value="{GLMasterData>balance}"/>
+                                </vizData:measures>
+                            </vizData:FlattenedDataset>
+                        </viz:dataset>
 
-        </table:columns>
-    </table:Table>
+                        <!-- Chart Feeds -->
+                        <viz:feeds>
+                            <vizFeeds:FeedItem uid="valueAxis" type="Measure" values="Bank Balance"/>
+                            <vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Month"/>
+                            <vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Year"/>
+                        </viz:feeds>
+                    </viz:VizFrame>
+                </suite:content>
+            </suite:ChartContainerContent>
+
+            <!-- ================= Table View ================= -->
+            <suite:ChartContainerContent icon="sap-icon://table-chart" title="Table View">
+                <suite:content>
+                    <table:Table
+                        id="idMonthlyTable"
+                        class="greenTable"
+                        rows="{GLMasterData>/mainGLData}"
+                        selectionMode="None"
+                        visibleRowCount="10"
+                        width="100%"
+                        enableColumnReordering="false"
+                        columnHeaderVisible="true">
+
+                        <table:columns>
+                            <table:Column width="33%">
+                                <m:Label text="Month" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
+                                <table:template>
+                                    <m:Text text="{GLMasterData>quarter}" wrapping="true"/>
+                                </table:template>
+                            </table:Column>
+
+                            <table:Column width="33%">
+                                <m:Label text="Year" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
+                                <table:template>
+                                    <m:Text text="{GLMasterData>gjahr}" wrapping="true"/>
+                                </table:template>
+                            </table:Column>
+
+                            <table:Column width="34%">
+                                <m:Label text="Bank Balance" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
+                                <table:template>
+                                    <m:Text text="{GLMasterData>balance}" wrapping="true"/>
+                                </table:template>
+                            </table:Column>
+                        </table:columns>
+                    </table:Table>
+                </suite:content>
+            </suite:ChartContainerContent>
+
+        </suite:content>
+    </suite:ChartContainer>
 
 </core:FragmentDefinition>
