@@ -16,7 +16,7 @@
         showPersonalization="false"
         autoAdjustHeight="false"
         showLegendButton="false"
-        title="{globalData>/selectedTabText}">
+        title="">
 
         <suite:content>
 
@@ -37,9 +37,9 @@
 
                         <!-- Data Binding -->
                         <viz:dataset>
-                            <vizData:FlattenedDataset data="{GLMasterData>/inOutGLData}">
+                            <vizData:FlattenedDataset data="{GLMasterData>/inOutGLDataMonthly}">
                                 <vizData:dimensions>
-                                    <vizData:DimensionDefinition name="Month" value="{GLMasterData>period}" />
+                                    <vizData:DimensionDefinition name="Month" value="{GLMasterData>periodText}" />
                                     <vizData:DimensionDefinition name="Year" value="{GLMasterData>gjahr}" />
                                 </vizData:dimensions>
                                 <vizData:measures>
@@ -65,7 +65,7 @@
                     <table:Table
                         id="idMonthlyAmountTable"
                         class="greenTable"
-                        rows="{GLMasterData>/inOutGLData}"
+                        rows="{GLMasterData>/inOutGLDataMonthly}"
                         selectionMode="None"
                         visibleRowCount="10"
                         width="100%"
@@ -77,7 +77,7 @@
                             <table:Column width="25%">
                                 <m:Label text="Month" class="sapUiTinyMargin sapUiSmallMarginBegin" />
                                 <table:template>
-                                    <m:Text text="{GLMasterData>period}" wrapping="true" />
+                                    <m:Text text="{GLMasterData>periodText}" wrapping="true" />
                                 </table:template>
                             </table:Column>
 
@@ -89,14 +89,14 @@
                             </table:Column>
 
                             <table:Column width="25%">
-                                <m:Label text="Incoming Amount" class="sapUiTinyMargin sapUiSmallMarginBegin" />
+                                <m:Label text="Incoming Amount(Lacs)" class="sapUiTinyMargin sapUiSmallMarginBegin" />
                                 <table:template>
                                     <m:Text text="{GLMasterData>per_sales_i}" wrapping="true" />
                                 </table:template>
                             </table:Column>
 
                             <table:Column width="25%">
-                                <m:Label text="Outgoing Amount" class="sapUiTinyMargin sapUiSmallMarginBegin" />
+                                <m:Label text="Outgoing Amount(Lacs)" class="sapUiTinyMargin sapUiSmallMarginBegin" />
                                 <table:template>
                                     <m:Text text="{GLMasterData>per_sales_o}" wrapping="true" />
                                 </table:template>

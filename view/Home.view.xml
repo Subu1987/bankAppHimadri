@@ -22,12 +22,15 @@
 								<core:Item key="{companyCodeMasterData>bukrs}" text="{= ${companyCodeMasterData>bukrs} + ' (' + ${companyCodeMasterData>bukrs_name} + ')' }"/>
 							</ComboBox>
 						</HBox>
-						<!--<HBox id="postingDatePickerBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
-							<DatePicker id="_postingDatePickerId" value="{globalData>/selectedPostingDate}" placeholder="Posting Date" required="true"
-								class="boldText roundedInput" change="onPostingDateChange" displayFormat="dd.MM.yyyy" valueFormat="yyyyMMdd"/>
-						</HBox>-->
+						<!-- Bank Account Dropdown -->
+						<HBox id="bankAccountSelectionBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
+							<ComboBox id="_bankAccountComboBoxId" placeholder="Select Bank Account" selectedKey="{globalData>/selectedBankAccount}"
+								class="boldText roundedInput" items="{ path: 'bankAccountMasterData>/', templateShareable: false }" tooltip="Select a bank account">
+								<core:Item key="{bankAccountMasterData>bank_name}" text="{bankAccountMasterData>bank_name}"/>
+							</ComboBox>
+						</HBox>
 						<!-- Fiscal Year Dropdown -->
-						<HBox id="fiscalYearPickerBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
+						<HBox id="fiscalYearSelectionBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
 							<ComboBox id="_fiscalYearComboBoxId" placeholder="Select Fiscal Year" selectedKey="{globalData>/selectedFiscalYear}"
 								class="boldText roundedInput" width="180px" tooltip="Select Fiscal Year" required="true" change="onFiscalYearChange">
 								<core:Item key="2020" text="2020"/>
@@ -39,15 +42,9 @@
 								<core:Item key="2026" text="2026"/>
 							</ComboBox>
 						</HBox>
-						<!-- Bank Account Dropdown -->
-						<HBox id="bankAccountSelectionBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
-							<ComboBox id="_bankAccountComboBoxId" placeholder="Select Bank Account" selectedKey="{globalData>/selectedBankAccount}"
-								class="boldText roundedInput" items="{ path: 'bankAccountMasterData>/', templateShareable: false }" tooltip="Select a bank account">
-								<core:Item key="{bankAccountMasterData>bank_name}" text="{bankAccountMasterData>bank_name}"/>
-							</ComboBox>
-						</HBox>
+
 						<!-- Month Dropdown -->
-						<HBox id="monthSelectionBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
+						<HBox id="monthSelectionBox" direction="Column" alignItems="Center" visible="false" class="sapUiTinyMarginBegin">
 							<ComboBox id="_monthComboBoxId" placeholder="Select Month" selectedKey="{globalData>/selectedMonth}" class="boldText roundedInput"
 								width="180px" tooltip="Select a month">
 								<core:Item key="01" text="January"/>
@@ -79,6 +76,13 @@
 							<Button id="searchData" icon="sap-icon://feeder-arrow" press="getGLBackendData" class="sapUiTinyMarginBegin" type="Accept"
 								tooltip="Execute"/>
 							<Button id="clearData" icon="sap-icon://delete" press="clearListData" class="sapUiTinyMarginBegin" type="Reject" tooltip="Clear All Data"/>
+							<Button
+                                id="themeToggleBtn"
+                                text=""
+                                icon="sap-icon://lightbulb"
+                                press=".onToggleTheme"
+                                class="sapUiTinyMarginBegin lightModeIcon"
+                                tooltip="Switch Theme"/>
 						</HBox>
 					</FlexBox>
 					<!-- ====================== RADIO BUTTON SECTION ====================== -->
@@ -92,7 +96,8 @@
 						</HBox>
 						<!-- ===== Group 2: Time Period Options ===== -->
 						<HBox id="radioGroupPeriod" direction="Row" alignItems="Center" class="sapUiTinyMarginBegin">
-							<RadioButtonGroup id="radioBtnGroupPeriod" columns="2" select="onRadioButtonSelectPeriod" class="styledRadioGroup">
+							<RadioButtonGroup id="radioBtnGroupPeriod" columns="3" select="onRadioButtonSelectPeriod" class="styledRadioGroup">
+								<RadioButton id="yearly" text="Yearly"/>
 								<RadioButton id="monthly" text="Monthly"/>
 								<RadioButton id="quarterly" text="Quarterly"/>
 							</RadioButtonGroup>

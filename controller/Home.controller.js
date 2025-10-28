@@ -16,6 +16,11 @@ sap.ui.define([
 		/*************** on Load Functions *****************/
 		onInit: function() {
 
+			// Restore the last selected theme when the app starts
+			var oCore = sap.ui.getCore();
+			var sSavedTheme = localStorage.getItem("selectedTheme") || "sap_fiori_3";
+			oCore.applyTheme(sSavedTheme);
+
 			this._initializeApp();
 
 		},
@@ -49,66 +54,87 @@ sap.ui.define([
 				console.error("Global data model is not available.");
 			}
 		},
+		onToggleTheme: function() {
+			var oCore = sap.ui.getCore();
+			var oButton = this.byId("themeToggleBtn");
+
+			// Define light and dark themes
+			var sLightTheme = "sap_fiori_3";
+			var sDarkTheme = "sap_fiori_3_dark";
+
+			// Get current theme
+			var sCurrentTheme = oCore.getConfiguration().getTheme();
+
+			// Determine next theme
+			var bIsLight = sCurrentTheme === sLightTheme;
+			var sNewTheme = bIsLight ? sDarkTheme : sLightTheme;
+
+			// Apply theme
+			oCore.applyTheme(sNewTheme);
+
+			// Update icon & color immediately for user feedback
+			if (oButton) {
+				oButton.setIcon("sap-icon://lightbulb");
+				oButton.removeStyleClass("lightModeIcon darkModeIcon");
+				oButton.addStyleClass(bIsLight ? "darkModeIcon" : "lightModeIcon");
+			}
+
+			// Save the theme so it persists on refresh
+			localStorage.setItem("selectedTheme", sNewTheme);
+		},
 
 		/*************** validate Inputs *****************/
 		validateInputs: function() {
 			var oView = this.getView();
+			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
 
-			// Friendly field names
+			// 🔹 Map field IDs to user-friendly labels
 			var mFieldNames = {
-				"_companyCodeInputId": "Company Code",
-				"_VenderInputId": "Vendor Code",
-				"_venderDatePickerId": "Due Date"
+				"_companyCodeComboBoxId": "Company Code",
+				"_fiscalYearComboBoxId": "Fiscal Year",
+				"_bankAccountComboBoxId": "Bank Account",
+				"_monthComboBoxId": "Month",
+				"_quarterComboBoxId": "Quarter"
 			};
 
-			var aInputIds = ["_companyCodeInputId", "_VenderInputId", "_venderDatePickerId"];
+			// 🔹 Always validate these three
+			var aInputIds = [
+				"_companyCodeComboBoxId",
+				"_fiscalYearComboBoxId",
+				"_bankAccountComboBoxId"
+			];
+
+			// 🔹 Conditionally validate Month OR Quarter
+			if (oGlobalData.selectedOption === "3") {
+				aInputIds.push("_monthComboBoxId");
+			} else if (oGlobalData.selectedOption === "4") {
+				aInputIds.push("_quarterComboBoxId");
+			}
+
 			var bAllValid = true;
 			var aEmptyFields = [];
 
 			aInputIds.forEach(function(sId) {
 				var oInput = oView.byId(sId);
-				if (oInput && oInput.getVisible && oInput.getVisible()) {
+				if (oInput) {
+					var sValue = oInput.getSelectedKey ? oInput.getSelectedKey().trim() : "";
 					var sFieldName = mFieldNames[sId] || sId;
-					var bValid = true;
 
-					if (oInput.getDateValue && typeof oInput.getDateValue === "function") {
-						var oDate = oInput.getDateValue();
-						if (!oDate || Object.prototype.toString.call(oDate) !== "[object Date]" || isNaN(oDate.getTime())) {
-							bValid = false;
-							oInput.setValueState("Error");
-							oInput.setValueStateText("Please select a valid date.");
-						} else {
-							oInput.setValueState("None");
-						}
-					} else if (oInput.getValue && typeof oInput.getValue === "function") {
-						var sValue = oInput.getValue() ? oInput.getValue().trim() : "";
-						if (!sValue) {
-							bValid = false;
-							oInput.setValueState("Error");
-							oInput.setValueStateText("This field cannot be empty.");
-						} else {
-							oInput.setValueState("None");
-						}
-					} else {
-						var sText = oInput.getText ? oInput.getText() : "";
-						if (!sText) {
-							bValid = false;
-							oInput.setValueState("Error");
-							oInput.setValueStateText("This field cannot be empty.");
-						} else {
-							oInput.setValueState("None");
-						}
-					}
-
-					if (!bValid) {
+					if (!sValue) {
 						bAllValid = false;
 						aEmptyFields.push(sFieldName);
+						oInput.setValueState("Error");
+						oInput.setValueStateText("Please select " + sFieldName + ".");
+					} else {
+						oInput.setValueState("None");
 					}
 				}
 			});
 
 			if (aEmptyFields.length > 0) {
-				sap.m.MessageBox.error("Please fill/choose the following fields:\n\n" + aEmptyFields.join("\n"));
+				sap.m.MessageBox.error(
+					"Please select the following fields before proceeding:\n\n" + aEmptyFields.join("\n")
+				);
 			}
 
 			return bAllValid;
@@ -176,20 +202,30 @@ sap.ui.define([
 				});
 			});
 		},
-		
+
 		/*************** radio Button & drop down selection  *****************/
 
 		onRadioButtonSelectPeriod: function(oEvent) {
 			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
 			var oSelectedIndex = oEvent.getParameter("selectedIndex");
+			var oYearBox = this.byId("fiscalYearSelectionBox");
 			var oMonthBox = this.byId("monthSelectionBox");
 			var oQuarterBox = this.byId("quarterSelectionBox");
-
-			if (oSelectedIndex === 0) { // Monthly selected
+			
+			if(oSelectedIndex === 0){
+			    oYearBox.setVisible(true);
+			    oMonthBox.setVisible(false);
+				oQuarterBox.setVisible(false);
+				oGlobalModel.setProperty("/selectedOption", "6");
+				
+			}else if (oSelectedIndex === 1) { // Monthly selected
+			    oYearBox.setVisible(true);
 				oMonthBox.setVisible(true);
 				oQuarterBox.setVisible(false);
 				oGlobalModel.setProperty("/selectedOption", "3");
-			} else if (oSelectedIndex === 1) { // Quarterly selected
+				
+			} else if (oSelectedIndex === 2) { // Quarterly selected
+			    oYearBox.setVisible(true);
 				oMonthBox.setVisible(false);
 				oQuarterBox.setVisible(true);
 				oGlobalModel.setProperty("/selectedOption", "4");
@@ -217,47 +253,52 @@ sap.ui.define([
 
 		/*************** get the Backend data for GL  *****************/
 
-		_buildGLFilters: function () {
-                var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
-                var filters = [];
-            
-                var {
-                    selectedGLType,
-                    selectedOption,
-                    selectedCompanyCode,
-                    selectedFiscalYear,
-                    selectedBankAccount,
-                    selectedMonth,
-                    selectedQuarter
-                } = oGlobalData;
-            
-                var Filter = sap.ui.model.Filter;
-                var FilterOperator = sap.ui.model.FilterOperator;
-            
-                // Helper to always add filters (even for empty values)
-                var addFilter = (path, value) => {
-                    filters.push(new Filter(path, FilterOperator.EQ, value || ""));
-                };
-            
-                // 🔹 Common filters
-                addFilter("bukrs", selectedCompanyCode);
-                addFilter("gjahr", selectedFiscalYear);
-                addFilter("bank_name", selectedBankAccount);
-            
-                // 🔹 Conditional filters for GL Type & Option
-                if (["A", "B"].includes(selectedGLType) && ["3", "4"].includes(selectedOption)) {
-                    var isMonthly = selectedOption === "3";
-            
-                    // Always include both period & quarter (even if one is empty)
-                    addFilter("period", isMonthly ? selectedMonth : "");
-                    addFilter("quarter", isMonthly ? "" : selectedQuarter);
-                    addFilter("checkbox", selectedGLType);
-                    addFilter("option", selectedOption);
-                }
-            
-                return filters;
-            },
+		_buildGLFilters: function() {
+			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
+			var filters = [];
+
+			var {
+				selectedGLType,
+				selectedOption,
+				selectedCompanyCode,
+				selectedFiscalYear,
+				selectedBankAccount,
+				selectedMonth,
+				selectedQuarter
+			} = oGlobalData;
+
+			var Filter = sap.ui.model.Filter;
+			var FilterOperator = sap.ui.model.FilterOperator;
+
+			// Helper to always add filters (even for empty values)
+			var addFilter = (path, value) => {
+				filters.push(new Filter(path, FilterOperator.EQ, value || ""));
+			};
+
+			// 🔹 Common filters
+			addFilter("bukrs", selectedCompanyCode);
+			addFilter("gjahr", selectedFiscalYear);
+			addFilter("bank_name", selectedBankAccount);
+
+			// 🔹 Conditional filters for GL Type & Option
+			if (["A", "B"].includes(selectedGLType) && ["3", "4"].includes(selectedOption)) {
+				var isMonthly = selectedOption === "3";
+
+				// Always include both period & quarter (even if one is empty)
+				addFilter("period", isMonthly ? selectedMonth : "");
+				addFilter("quarter", isMonthly ? "" : selectedQuarter);
+				addFilter("checkbox", selectedGLType);
+				addFilter("option", selectedOption);
+			}
+
+			return filters;
+		},
 		getGLBackendData: function() {
+
+			if (!this.validateInputs()) {
+				return; // Stop if required fields are missing
+			}
+
 			var oModel = this.getOwnerComponent().getModel();
 			var oGlobalData = this.getOwnerComponent().getModel("globalData").getData();
 			var oGLlistModel = this.getOwnerComponent().getModel("GLMasterData");
@@ -270,13 +311,36 @@ sap.ui.define([
 				success: (response) => {
 					var oData = response.results || [];
 					console.log("GL Data:", oData);
-                    
-                    if(oGlobalData.selectedGLType === "A"){
-                        oGLlistModel.setProperty("/inOutGLData", oData);
-                    }else{
-                        oGLlistModel.setProperty("/mainGLData", oData);
-                    }
-					
+
+					// 🔁 Single helper function for all transformation
+					oData = this._prepareGLBalanceData(oData);
+
+					// 🔁 Convert numeric fields into Lakhs
+					oData = this._convertGLValuesToLakhs(oData);
+
+					console.log("Modified GL Data (Lakhs):", oData);
+
+					if (oGlobalData.selectedGLType === "A" && oGlobalData.selectedOption === "3") {
+						// Incoming & Outgoing GL (Monthly)
+						oGLlistModel.setProperty("/inOutGLDataMonthly", oData);
+						this._bindIncomingOutgoingGLMonthlyChart("chartFragment1", oData);
+
+					} else if (oGlobalData.selectedGLType === "A" && oGlobalData.selectedOption === "4") {
+						// Incoming & Outgoing GL (Quarterly)
+						oGLlistModel.setProperty("/inOutGLDataQuarterly", oData);
+						this._bindIncomingOutgoingGLQuarterlyChart("chartFragment2", oData);
+
+					} else if (oGlobalData.selectedGLType === "B" && oGlobalData.selectedOption === "3") {
+						// Main GL (Monthly)
+						oGLlistModel.setProperty("/mainGLDataMonthly", oData);
+						this._bindMainGLMonthlyChart("chartFragment3", oData);
+
+					} else if (oGlobalData.selectedGLType === "B" && oGlobalData.selectedOption === "4") {
+						// Main GL (Quarterly)
+						oGLlistModel.setProperty("/mainGLDataQuarterly", oData);
+						this._bindMainGLQuarterlyChart("chartFragment4", oData);
+					}
+
 					console.log(oGLlistModel);
 					sap.ui.core.BusyIndicator.hide();
 
@@ -300,37 +364,46 @@ sap.ui.define([
 
 		/*************** helper function  *****************/
 
-		sortByTurnOverDesc: function(aData) {
-			return aData.sort(function(a, b) {
-				return parseFloat(b.turnOver) - parseFloat(a.turnOver);
+		// 🔹 Single helper for data transformation
+		_prepareGLBalanceData: function(aData) {
+			var monthNames = {
+				"01": "January",
+				"02": "February",
+				"03": "March",
+				"04": "April",
+				"05": "May",
+				"06": "June",
+				"07": "July",
+				"08": "August",
+				"09": "September",
+				"10": "October",
+				"11": "November",
+				"12": "December"
+			};
+
+			return aData.map(item => {
+				// Convert numeric period to month name (fallback to "Unknown")
+				var monthName = monthNames[item.period] || "Unknown";
+
+				return {
+					...item,
+					periodText: monthName
+				};
 			});
 		},
-		convertValuesToLacs: function(item) {
-			// Fields that need to be converted
-			var aFieldsToConvert = [
-				"netpr", "wrbtr", "netwr", "vend_adv",
-				"creditor", "lc", "factoring", "rxil", "abg", "pbg"
-			];
+		_convertGLValuesToLakhs: function(aData) {
+			return aData.map(function(item) {
+				var parseNum = (val) => {
+					var num = parseFloat(val);
+					return isNaN(num) ? 0 : num / 100000; // Convert to Lakhs
+				};
 
-			aFieldsToConvert.forEach(function(field) {
-				if (item[field] !== undefined && item[field] !== null && !isNaN(item[field])) {
-					var lacValue = parseFloat(item[field]) / 100000; // Convert to Lacs
-					item[field] = parseFloat(lacValue).toFixed(2); // Round to 2 decimals
-				}
+				return Object.assign({}, item, {
+					per_sales_i: parseNum(item.per_sales_i).toFixed(2),
+					per_sales_o: parseNum(item.per_sales_o).toFixed(2),
+					balance: parseNum(item.balance).toFixed(2)
+				});
 			});
-
-			return item;
-		},
-		generateSupplierShort: function(item) {
-			var words = item.supplier.split(" ");
-			var abbreviation = words
-				.filter(w => w.length > 2 && w[0] === w[0].toUpperCase())
-				.map(w => w[0])
-				.join("")
-				.toUpperCase();
-
-			/*item.supplierShort = abbreviation || item.supplier;*/
-			item.supplierShort = item.supplier;
 		},
 
 		/*************** Clear data from all input fields,radio button & model make it default  *****************/
@@ -403,154 +476,175 @@ sap.ui.define([
 
 		/*************** chart function & plotting the chart Incoming & Outgoing GL data  *****************/
 
-		generateColorMapByIncomingOutgoingGL: function(data, sSelectedTabTextSupplierDue) {
-			const colorMap = {};
-			let uniqueKeys = [];
+		// ==========================================================
+		//  🔹 Incoming & Outgoing GL - Monthly
+		// ==========================================================
+		_bindIncomingOutgoingGLMonthlyChart: function(sFragmentId, oData) {
+			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMonthlyAmountVizFrame");
+			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idPopOverMonthlyAmount");
 
-			// Choose key format based on selected tab
-			if (sSelectedTabTextSupplierDue === "Total Outstanding") {
-				uniqueKeys = [...new Set(data.map(item => item.name1))];
-			} else {
-				uniqueKeys = [...new Set(data.map(item => `${item.name1}`))];
-			}
+			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
 
-			// Generate HSL colors based on index
-			uniqueKeys.forEach((key, i) => {
-				const color = `hsl(${(i * 43) % 360}, 70%, 50%)`;
-				colorMap[key] = color;
-			});
+			oPopover.connect(oVizFrame.getVizUid());
 
-			return {
-				colorMap
-			};
-		},
-		bindChartColorRulesByIncomingOutgoingGL: function(sFragmentId, oData) {
-			var oGlobalModel = this.getOwnerComponent().getModel("globalData");
-			var sSelectedTabTextSupplierDue = oGlobalModel.getProperty("/selectedTabTextSupplierDue");
-			var oVizFrameSupplierDue = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idVizFrameSupplierDue");
-
-			if (!oVizFrameSupplierDue) {
-				console.warn("VizFrame not found for Fragment ID:", sFragmentId);
-				return;
-			}
-
-			var {
-				colorMap
-			} = this.generateColorMapBySupplierDue(oData, sSelectedTabTextSupplierDue);
-
-			var rules = [];
-
-			if (sSelectedTabTextSupplierDue === "Total Outstanding") {
-				rules = oData.map(item => ({
-					dataContext: {
-						"Amount": item.amount
-					},
-					properties: {
-						color: colorMap[item.amount]
-					}
-				}));
-			} else {
-				rules = oData.map(item => {
-					const key = `${item.name1}`;
-					return {
-						dataContext: {
-							"Supplier Name": item.name1,
-							/*"Amount": item.amount*/
-						},
-						properties: {
-							color: colorMap[key]
-						}
-					};
-				});
-			}
-
-			oVizFrameSupplierDue.setVizProperties({
+			oVizFrame.setVizProperties({
 				title: {
-					visible: true,
-					text: "Supplier Due As on Date"
+					text: "Incoming & Outgoing GL (Monthly)",
+					visible: true
 				},
 				plotArea: {
-					dataPointStyle: {
-						rules
-					},
 					dataLabel: {
 						visible: true,
+						formatString: "#,##0.00"
 					},
 					drawingEffect: "glossy"
+				},
+				legend: {
+					visible: true
+				},
+				valueAxis: {
+					title: {
+						text: "Amount (₹ Lacs)"
+					}
+				},
+				categoryAxis: {
+					title: {
+						text: "Month"
+					}
+				},
+				tooltip: {
+					visible: true
+				}
+			});
+		},
+
+		// ==========================================================
+		//  🔹 Incoming & Outgoing GL - Quarterly
+		// ==========================================================
+		_bindIncomingOutgoingGLQuarterlyChart: function(sFragmentId, oData) {
+			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idQuarterlyAmountVizFrame");
+			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idPopOverQuarterlyAmount");
+
+			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
+
+			oPopover.connect(oVizFrame.getVizUid());
+
+			oVizFrame.setVizProperties({
+				title: {
+					text: "Incoming & Outgoing GL (Quarterly)",
+					visible: true
+				},
+				plotArea: {
+					dataLabel: {
+						visible: true,
+						formatString: "#,##0.00"
+					},
+					drawingEffect: "glossy"
+				},
+				legend: {
+					visible: true
+				},
+				valueAxis: {
+					title: {
+						text: "Amount (₹ Lacs)"
+					}
+				},
+				categoryAxis: {
+					title: {
+						text: "Quarter"
+					}
+				},
+				tooltip: {
+					visible: true
+				}
+			});
+		},
+
+		// ==========================================================
+		//  🔹 Main GL - Monthly
+		// ==========================================================
+		_bindMainGLMonthlyChart: function(sFragmentId, oData) {
+			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLMonthlyVizFrame");
+			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLMonthlyPopover");
+
+			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
+
+			oPopover.connect(oVizFrame.getVizUid());
+
+			oVizFrame.setVizProperties({
+				title: {
+					text: "Main GL (Monthly)",
+					visible: true
+				},
+				plotArea: {
+					dataLabel: {
+						visible: true,
+						formatString: "#,##0.00"
+					},
+					drawingEffect: "glossy",
+					colorPalette: ["#2E86C1"]
+				},
+				valueAxis: {
+					title: {
+						text: "Bank Balance (₹ Lacs)"
+					}
+				},
+				categoryAxis: {
+					title: {
+						text: "Month"
+					}
 				},
 				tooltip: {
 					visible: true
 				},
-				interaction: {
-					selectability: {
-						mode: "multiple"
-					},
-				},
-				categoryAxis: {
-					label: {
-						visible: true,
-						allowMultiline: true,
-						linesOfWrap: 4,
-						overlapBehavior: "wrap",
-						rotation: 0,
-						angle: 0,
-						maxWidth: 200,
-						truncatedLabelRatio: 0.9,
-						style: {
-							fontSize: "10px"
-						}
-					}
-				},
-				valueAxis: {
-					label: {
-						visible: true
-					}
+				legend: {
+					visible: true
 				}
 			});
-
-			// Use bind to pass sFragmentId and call _onChartSelect
-			/*oVizFrameSupplierDue.attachSelectData(this._onChartSelectSupplierDue.bind(this, sFragmentId));*/
-
 		},
-		_onChartSelectSupplierDue: function(sFragmentId, oEvent) {
-			var oVizFrameSupplierDue = oEvent.getSource();
-			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idPopOverAllSupplierDue");
 
-			if (!oPopover) {
-				console.warn("Popover not found for Fragment ID:", sFragmentId)
-				return;
-			}
+		// ==========================================================
+		//  🔹 Main GL - Quarterly
+		// ==========================================================
+		_bindMainGLQuarterlyChart: function(sFragmentId, oData) {
+			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLQuarterlyVizFrame");
+			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLQuarterlyPopover");
 
-			// Get selected data from the event (it will be in the 'data' parameter of the event)
-			var aSelectedData = oEvent.getParameter("data");
+			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
 
-			if (!aSelectedData || aSelectedData.length === 0) {
-				console.warn("No data selected");
-				return;
-			}
+			oPopover.connect(oVizFrame.getVizUid());
 
-			// We assume single selection and access the first item in the selected data array
-			var oSelectedItem = aSelectedData[0];
-
-			// Directly get the data from the selected item
-			var oDataContext = oSelectedItem.data; // Directly access the data (it may not need 'data.data')
-
-			// Assuming you are accessing Supplier Name, Fiscal Year, and Turnover
-			var sSupplier = oDataContext["Supplier Name"];
-			var sAmount = oDataContext["Amount (₹ Cr)"]; // Adjust the field name as necessary
-
-			// Create a JSON model to hold the data for the Popover
-			var oPopoverModel = new sap.ui.model.json.JSONModel({
-				supplier: sSupplier,
-				amount: sAmount
+			oVizFrame.setVizProperties({
+				title: {
+					text: "Main GL (Quarterly)",
+					visible: true
+				},
+				plotArea: {
+					dataLabel: {
+						visible: true,
+						formatString: "#,##0.00"
+					},
+					drawingEffect: "glossy",
+					colorPalette: ["#E67E22"]
+				},
+				valueAxis: {
+					title: {
+						text: "Bank Balance (₹ Lacs)"
+					}
+				},
+				categoryAxis: {
+					title: {
+						text: "Quarter"
+					}
+				},
+				tooltip: {
+					visible: true
+				},
+				legend: {
+					visible: true
+				}
 			});
-
-			// Set the model on the Popover
-			oPopover.setModel(oPopoverModel);
-
-			// Connect the Popover to the VizFrame
-			oPopover.connect(oVizFrameSupplierDue.getVizUid());
-		},
+		}
 
 	});
 });

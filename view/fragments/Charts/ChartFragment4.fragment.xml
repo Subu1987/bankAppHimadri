@@ -16,7 +16,7 @@
         showPersonalization="false"
         autoAdjustHeight="false"
         showLegendButton="false"
-        title="{globalData>/selectedTabText}">
+        title="">
 
         <suite:content>
 
@@ -24,7 +24,7 @@
             <suite:ChartContainerContent icon="sap-icon://bar-chart" title="Chart View">
                 <suite:content>
                     <viz:VizFrame
-                        id="idMonthlyVizFrame"
+                        id="idMainGLQuarterlyVizFrame"
                         vizType="column"
                         height="380px"
                         width="100%"
@@ -32,12 +32,12 @@
 
                         <!-- Popover for tooltip -->
                         <viz:dependents>
-                            <viz:Popover id="idPopOverMonthly"></viz:Popover>
+                            <viz:Popover id="idMainGLQuarterlyPopover"></viz:Popover>
                         </viz:dependents>
 
                         <!-- Data Binding -->
                         <viz:dataset>
-                            <vizData:FlattenedDataset data="{GLMasterData>/mainGLData}">
+                            <vizData:FlattenedDataset data="{GLMasterData>/mainGLDataQuarterly}">
                                 <vizData:dimensions>
                                     <vizData:DimensionDefinition name="Month" value="{GLMasterData>quarter}"/>
                                     <vizData:DimensionDefinition name="Year" value="{GLMasterData>gjahr}"/>
@@ -64,7 +64,7 @@
                     <table:Table
                         id="idMonthlyTable"
                         class="greenTable"
-                        rows="{GLMasterData>/mainGLData}"
+                        rows="{GLMasterData>/mainGLDataQuarterly}"
                         selectionMode="None"
                         visibleRowCount="10"
                         width="100%"
@@ -87,7 +87,7 @@
                             </table:Column>
 
                             <table:Column width="34%">
-                                <m:Label text="Bank Balance" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
+                                <m:Label text="Bank Balance(Lacs)" class="sapUiTinyMargin sapUiSmallMarginBegin"/>
                                 <table:template>
                                     <m:Text text="{GLMasterData>balance}" wrapping="true"/>
                                 </table:template>

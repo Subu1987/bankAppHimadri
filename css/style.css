@@ -1,256 +1,218 @@
-/* Enter your custom styles here */
-
+/* =========================================
+   GLOBAL RESETS & BASE
+========================================= */
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Header background */
+/* =========================================
+   TABLE STYLING (THEME-AWARE)
+========================================= */
 html .sapUiTableColHdrCnt {
-    background-color: #107e3e !important;
-    color: #fff !important;
+  background-color: var(--sapShellColor) !important;
+  color: var(--sapShellTextColor) !important;
 }
 
-/* Row hover */
 html .sapUiTableCtrl tr.sapUiTableRowHvr > td {
-    background-color: #107e3e !important;
+  background-color: var(--sapList_Hover_Background) !important;
 }
 
-/* Selected row (optional) */
 html .sapUiTableCtrl tr.sapUiTableRowSel > td {
-    background-color: #107e3e !important;
-    color: #fff !important;
+  background-color: var(--sapSelectedColor) !important;
+  color: var(--sapTextSelectionColor) !important;
 }
 
-
-
-/* Allow text to wrap inside IconTabFilter */
-.sapMIconTabFilter .sapMText {
-    white-space: normal; /* Allow wrapping */
-    word-wrap: break-word; /* Break words if necessary */
-    overflow-wrap: break-word; /* Prevent text overflow */
-}
-.customTitleCenter {
-	width: 100%;
-	text-align: center;
-	display: block;
-	color: #004593; /* Optional: apply color */
-	font-weight: bold;
-}
-
-
-/* For most browsers */
-.boldText input::placeholder {
-    font-weight: bold !important;
-    color: #000 !important;
-}
-
-/* For Safari */
-.boldText input::-webkit-input-placeholder {
-    font-weight: bold !important;
-    color: #000 !important;
-}
-
-/* Targets the outermost wrapper including value help icon */
-.roundedInput .sapMInputBaseContentWrapper {
-  border-radius: 6px !important;
-  border: 1px solid #ccc !important; /* Optional: visible border */
-  overflow: hidden; /* Ensures the rounding is respected */
-}
-
-/* Optional: for cleaner appearance */
-.roundedInput .sapMInputBaseInner {
-  border: none !important;
-}
-
-/* Optional: style on focus */
-.roundedInput .sapMInputFocused .sapMInputBaseContentWrapper {
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
-}
-
-
-
-/* Optional: make input text bold */
-.boldText .sapMInputBaseInner {
-  font-weight: bold;
-}
-
-/* ====================== ICON TAB BAR STYLING ====================== */
-
-/* Make tab text slightly larger and bold */
+/* =========================================
+   ICON TAB BAR STYLING
+========================================= */
 .beautifulTabBar .sapMITBText {
-	font-size: 1rem;
-	font-weight: 600;
-	color: #333;
-	text-align: center;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--sapTextColor) !important;
+  text-align: center;
 }
 
-/* Center icon and text vertically and horizontally */
 .beautifulTabBar .sapMITBTab {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
 }
 
-/* Space tabs evenly across the width */
 .beautifulTabBar .sapMITBHead {
-	display: flex;
-	justify-content: space-around;
-	align-items: center;
-	width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
 }
 
-/* Adjust icon size slightly for balance */
 .beautifulTabBar .sapMITBIcon {
-	font-size: 1.1rem;
-	margin-bottom: 8px;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
 }
 
-/* Optional rounded and subtle background on hover/focus */
 .beautifulTabBar .sapMITBFilter {
-	border-radius: 12px;
-	transition: background-color 0.2s ease;
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
 }
 
 .beautifulTabBar .sapMITBFilter:hover {
-	background-color: #f5f5f5;
+  background-color: var(--sapList_Hover_Background);
 }
 
+/* =========================================
+   HEADER TITLE
+========================================= */
+.customTitleCenter {
+  width: 100%;
+  text-align: center;
+  display: block;
+  color: var(--sapTitleColor) !important;
+  font-weight: bold;
+}
 
-/* Style for bold, beautiful radio button text */
+/* =========================================
+   INPUTS & PLACEHOLDERS
+========================================= */
+.boldText input::placeholder,
+.boldText input::-webkit-input-placeholder {
+  font-weight: bold !important;
+  color: var(--sapContent_LabelColor) !important;
+}
+
+.roundedInput .sapMInputBaseContentWrapper {
+  border-radius: 6px !important;
+  border: 1px solid var(--sapField_BorderColor) !important;
+  overflow: hidden;
+}
+
+.roundedInput .sapMInputBaseInner {
+  border: none !important;
+  font-weight: bold;
+  color: var(--sapTextColor) !important;
+  background-color: var(--sapField_Background) !important;
+}
+
+.roundedInput .sapMInputFocused .sapMInputBaseContentWrapper {
+  box-shadow: 0 0 4px var(--sapContent_FocusColor);
+}
+
+/* =========================================
+   RADIO BUTTONS
+========================================= */
 .styledRadioGroup .sapMRbBLabel {
-	font-weight: bold;
-	font-size: 0.9rem;
-	color: #2c3e50; /* You can choose any theme-friendly color */
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--sapTextColor);
 }
 
-/* Optional: Add spacing and hover effect for better feel */
 .styledRadioGroup .sapMRb {
-	margin: 8px;
-	transition: all 0.2s ease-in-out;
+  margin: 8px;
+  transition: all 0.2s ease-in-out;
 }
 
 .styledRadioGroup .sapMRb:hover .sapMRbBLabel {
-	color: #0070f2;
+  color: var(--sapLinkColor);
 }
+
 .styledRadioGroup .sapMRbSel .sapMRbBOut {
-	border-color: #0070f2;
-	background-color: #0070f2;
+  border-color: var(--sapLinkColor);
+  background-color: var(--sapLinkColor);
 }
 
-
-
+/* =========================================
+   BUTTONS
+========================================= */
+.sapMBtnInner {
+  border: none !important;
+}
 
 .smallIcon .sapMBtnIcon {
-    font-size: 1.1rem !important;
-    /* Adjust the font-size as per your preference */
+  font-size: 1.1rem !important;
 }
 
 .round {
-    border-radius: 50px !important;
+  border-radius: 50px !important;
 }
 
-.sapMInputBaseInner {
-    border-radius: 10px;
-}
-
-.boldText {
-    font-weight: bold !important;
-}
-
+/* =========================================
+   TABLES & CHART PANELS
+========================================= */
 #dynamicTable {
-    border-right: 1.2px solid #34618747 !important;
+  border-right: 1.2px solid var(--sapList_BorderColor) !important;
 }
 
 #chartPanel {
-    border-left: 1.2px solid #34618747 !important;
+  border-left: 1.2px solid var(--sapList_BorderColor) !important;
 }
 
 .highlightedRow {
-    background-color: #e5e5ff !important;
-}
-
-.chartButton {
-    font-size: 1.5rem !important;
-}
-
-.incomingCircle {
-    width: 15px;
-    height: 15px;
-    background-color: #00e600;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.outgoingCircle {
-    width: 15px;
-    height: 15px;
-    background-color: #0000b3;
-    border-radius: 50%;
-    display: inline-block;
-}
-
-.balanceText {
-    margin-left: 5px;
+  background-color: var(--sapList_SelectionBackgroundColor) !important;
 }
 
 .pdfTable {
-    width: auto;
-    /* Allow table to expand horizontally */
-    border-collapse: collapse;
-    margin: 0;
-    /* Remove any margin */
-    padding: 0;
-    /* Remove any padding */
-    white-space: nowrap;
-    /* Prevent line breaks within table cells */
-    overflow-x: auto;
-    /* Enable horizontal scrolling */
+  width: auto;
+  border-collapse: collapse;
+  white-space: nowrap;
+  overflow-x: auto;
 }
 
 .pdfTable td {
-    border: 1px solid #4c4cff;
-    padding: 8px;
-    text-align: left;
+  border: 1px solid var(--sapList_BorderColor);
+  padding: 8px;
+  text-align: left;
+  color: var(--sapTextColor);
 }
 
 .pdfTable th {
-    background-color: #4d4dff;
-    font-weight: bold !important;
+  background-color: var(--sapList_HeaderBackground);
+  font-weight: bold !important;
+  color: var(--sapList_HeaderTextColor);
 }
 
-.sapMListTblRow {
-    margin: 0;
-    /* Remove any margin */
-    padding: 0;
-    /* Remove any padding */
+/* =========================================
+   LEGEND COLORS
+========================================= */
+.incomingCircle {
+  width: 15px;
+  height: 15px;
+  background-color: var(--sapAccentColor6);
+  border-radius: 50%;
+  display: inline-block;
 }
-.pdfTable td {
-    border: 1px solid #c0c4cc;
-    padding: 8px;
-    text-align: left;
+
+.outgoingCircle {
+  width: 15px;
+  height: 15px;
+  background-color: var(--sapAccentColor4);
+  border-radius: 50%;
+  display: inline-block;
 }
- 
-.pdfTable th {
-    background-color: #91c8f6;
-    font-weight: bold;
+
+.balanceText {
+  margin-left: 5px;
+  color: var(--sapTextColor);
 }
-.sapMBtnInner{
 
-	border: none !important;
-
+/* =========================================
+   THEME SPECIFIC CLASS (OPTIONAL)
+   For any custom tweaks in dark mode
+========================================= */
+body.dark-theme .customTitleCenter {
+  color: var(--sapContent_ContrastTextColor) !important;
 }
- 
-.highlightedRow {
 
-    background-color: #5fb2f7 !important;
-
+/* Light theme → black bulb */
+.lightModeIcon .sapMBtnIcon {
+  color: #000 !important;
 }
- 
-.boldText {
 
-    font-weight: bold !important;
-
+/* Dark theme → white bulb */
+.darkModeIcon .sapMBtnIcon {
+  color: #fff !important;
 }
+
+

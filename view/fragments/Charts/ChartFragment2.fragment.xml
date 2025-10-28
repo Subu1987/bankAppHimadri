@@ -16,7 +16,7 @@
         showPersonalization="false"
         autoAdjustHeight="false"
         showLegendButton="false"
-        title="{globalData>/selectedTabText}">
+        title="">
 
         <suite:content>
 
@@ -24,7 +24,7 @@
             <suite:ChartContainerContent icon="sap-icon://bar-chart" title="Chart View">
                 <suite:content>
                     <viz:VizFrame
-                        id="idMonthlyAmountVizFrame"
+                        id="idQuarterlyAmountVizFrame"
                         vizType="column"
                         height="380px"
                         width="100%"
@@ -32,12 +32,12 @@
 
                         <!-- Popover for tooltip -->
                         <viz:dependents>
-                            <viz:Popover id="idPopOverMonthlyAmount"></viz:Popover>
+                            <viz:Popover id="idPopOverQuarterlyAmount"></viz:Popover>
                         </viz:dependents>
 
                         <!-- Data Binding -->
                         <viz:dataset>
-                            <vizData:FlattenedDataset data="{GLMasterData>/inOutGLData}">
+                            <vizData:FlattenedDataset data="{GLMasterData>/inOutGLDataQuarterly}">
                                 <vizData:dimensions>
                                     <vizData:DimensionDefinition name="Month" value="{GLMasterData>quarter}" />
                                     <vizData:DimensionDefinition name="Year" value="{GLMasterData>gjahr}" />
@@ -65,7 +65,7 @@
                     <table:Table
                         id="idMonthlyAmountTable"
                         class="greenTable"
-                        rows="{GLMasterData>/inOutGLData}"
+                        rows="{GLMasterData>/inOutGLDataQuarterly}"
                         selectionMode="None"
                         visibleRowCount="10"
                         width="100%"
@@ -89,14 +89,14 @@
                             </table:Column>
 
                             <table:Column width="25%">
-                                <m:Label text="Incoming Amount" class="sapUiTinyMargin sapUiSmallMarginBegin" />
+                                <m:Label text="Incoming Amount(Lacs)" class="sapUiTinyMargin sapUiSmallMarginBegin" />
                                 <table:template>
                                     <m:Text text="{GLMasterData>per_sales_i}" wrapping="true" />
                                 </table:template>
                             </table:Column>
 
                             <table:Column width="25%">
-                                <m:Label text="Outgoing Amount" class="sapUiTinyMargin sapUiSmallMarginBegin" />
+                                <m:Label text="Outgoing Amount(Lacs)" class="sapUiTinyMargin sapUiSmallMarginBegin" />
                                 <table:template>
                                     <m:Text text="{GLMasterData>per_sales_o}" wrapping="true" />
                                 </table:template>
