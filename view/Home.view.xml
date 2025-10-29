@@ -44,7 +44,7 @@
 						</HBox>
 
 						<!-- Month Dropdown -->
-						<HBox id="monthSelectionBox" direction="Column" alignItems="Center" visible="false" class="sapUiTinyMarginBegin">
+						<HBox id="monthSelectionBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
 							<ComboBox id="_monthComboBoxId" placeholder="Select Month" selectedKey="{globalData>/selectedMonth}" class="boldText roundedInput"
 								width="180px" tooltip="Select a month">
 								<core:Item key="01" text="January"/>
@@ -97,9 +97,10 @@
 						<!-- ===== Group 2: Time Period Options ===== -->
 						<HBox id="radioGroupPeriod" direction="Row" alignItems="Center" class="sapUiTinyMarginBegin">
 							<RadioButtonGroup id="radioBtnGroupPeriod" columns="3" select="onRadioButtonSelectPeriod" class="styledRadioGroup">
-								<RadioButton id="yearly" text="Yearly"/>
+								
 								<RadioButton id="monthly" text="Monthly"/>
 								<RadioButton id="quarterly" text="Quarterly"/>
+								<RadioButton id="yearly" text="Yearly"/>
 							</RadioButtonGroup>
 						</HBox>
 					</FlexBox>
@@ -146,9 +147,9 @@
 							<IconTabFilter key="scenario3" text="Main GL (Monthly)" icon="sap-icon://wallet" tooltip="Main GL (Monthly)" iconColor="Critical"
 								design="Horizontal">
 								<content>
-									<VBox visible="{globalData>/isChartFragment5Visible}">
+									<!--<VBox visible="{globalData>/isChartFragment5Visible}">
 										<core:Fragment id="chartFragment3" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment3" type="XML"/>
-									</VBox>
+									</VBox>-->
 								</content>
 							</IconTabFilter>
 							<IconTabSeparator/>

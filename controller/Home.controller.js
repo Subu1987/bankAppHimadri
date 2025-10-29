@@ -212,23 +212,24 @@ sap.ui.define([
 			var oMonthBox = this.byId("monthSelectionBox");
 			var oQuarterBox = this.byId("quarterSelectionBox");
 			
-			if(oSelectedIndex === 0){
-			    oYearBox.setVisible(true);
-			    oMonthBox.setVisible(false);
-				oQuarterBox.setVisible(false);
-				oGlobalModel.setProperty("/selectedOption", "6");
-				
-			}else if (oSelectedIndex === 1) { // Monthly selected
+			if (oSelectedIndex === 0) { // Monthly selected
 			    oYearBox.setVisible(true);
 				oMonthBox.setVisible(true);
 				oQuarterBox.setVisible(false);
 				oGlobalModel.setProperty("/selectedOption", "3");
 				
-			} else if (oSelectedIndex === 2) { // Quarterly selected
+			} else if (oSelectedIndex === 1) { // Quarterly selected
 			    oYearBox.setVisible(true);
 				oMonthBox.setVisible(false);
 				oQuarterBox.setVisible(true);
 				oGlobalModel.setProperty("/selectedOption", "4");
+				
+			} else if(oSelectedIndex === 2){ // Yearly selected
+			    oYearBox.setVisible(true);
+			    oMonthBox.setVisible(false);
+				oQuarterBox.setVisible(false);
+				oGlobalModel.setProperty("/selectedOption", "6");
+				
 			}
 		},
 		onRadioButtonSelectGL: function(oEvent) {
@@ -330,15 +331,24 @@ sap.ui.define([
 						oGLlistModel.setProperty("/inOutGLDataQuarterly", oData);
 						this._bindIncomingOutgoingGLQuarterlyChart("chartFragment2", oData);
 
+					}else if (oGlobalData.selectedGLType === "A" && oGlobalData.selectedOption === "6") {
+						// Incoming & Outgoing GL (Quarterly)
+						oGLlistModel.setProperty("/inOutGLDataYearly", oData);
+						this._bindIncomingOutgoingGLYearlyChart("chartFragment3", oData);
+
 					} else if (oGlobalData.selectedGLType === "B" && oGlobalData.selectedOption === "3") {
 						// Main GL (Monthly)
 						oGLlistModel.setProperty("/mainGLDataMonthly", oData);
-						this._bindMainGLMonthlyChart("chartFragment3", oData);
+						this._bindMainGLMonthlyChart("chartFragment4", oData);
 
 					} else if (oGlobalData.selectedGLType === "B" && oGlobalData.selectedOption === "4") {
 						// Main GL (Quarterly)
 						oGLlistModel.setProperty("/mainGLDataQuarterly", oData);
-						this._bindMainGLQuarterlyChart("chartFragment4", oData);
+						this._bindMainGLQuarterlyChart("chartFragment5", oData);
+					} else if (oGlobalData.selectedGLType === "B" && oGlobalData.selectedOption === "6") {
+						// Main GL (Quarterly)
+						oGLlistModel.setProperty("/mainGLDataYearly", oData);
+						this._bindMainGLYearlyChart("chartFragment6", oData);
 					}
 
 					console.log(oGLlistModel);
