@@ -468,36 +468,17 @@ sap.ui.define([
 
 					if (oAction === sap.m.MessageBox.Action.OK) {
 
-						// that._updateGlobalDataModel();
-
-						/* ============================================================
-                   Reset RadioButtonGroups and Trigger Handlers
-                   ============================================================ */
 						// Reset GL Radio Group
 						const oRadioGroupGL = that.byId("radioBtnGroupGL");
 						if (oRadioGroupGL) {
 							oRadioGroupGL.setSelectedIndex(0); // "Incoming & Outgoing GL"
-							that.onRadioButtonSelectGL({
-								getParameter: () => ({
-									selectedIndex: 0
-								}),
-								getSource: () => oRadioGroupGL
-							});
 						}
 
 						// Reset Period Radio Group
 						const oRadioGroupPeriod = that.byId("radioBtnGroupPeriod");
 						if (oRadioGroupPeriod) {
 							oRadioGroupPeriod.setSelectedIndex(0); // "Monthly"
-							that.onRadioButtonSelectPeriod({
-								getParameter: (sParam) => sParam === "selectedIndex" ? 0 : null,
-								getSource: () => oRadioGroupPeriod
-							});
 						}
-
-						/* ============================================================
-						   Reset IconTabBar to default
-						   ============================================================ */
 
 						var oIncomingOutgoingPanel = that.byId("panelIncomingOutgoingViewBox");
 						var oMainGLPanel = that.byId("panelMainViewBox");
@@ -508,24 +489,26 @@ sap.ui.define([
 						// Incoming & Outgoing GL TabBar
 						const oIconTabBarInOut = oView.byId("iconTabIncomingOutgoingBar");
 						if (oIconTabBarInOut) {
-							oIconTabBarInOut.getItems().forEach(function(oItem) {
-								const sKey = oItem.getKey();
-								// Show only Scenario 1
-								oItem.setVisible(sKey === "scenario1");
-							});
 							oIconTabBarInOut.setSelectedKey("scenario1");
 						}
 
 						// Main GL TabBar
 						const oIconTabBarMain = oView.byId("iconTabMainBar");
 						if (oIconTabBarMain) {
-							oIconTabBarMain.getItems().forEach(function(oItem) {
-								const sKey = oItem.getKey();
-								// Show only Scenario 4
-								oItem.setVisible(sKey === "scenario4");
-							});
 							oIconTabBarMain.setSelectedKey("scenario4");
 						}
+
+						var oYearBox = that.byId("fiscalYearSelectionBox");
+						var oMonthBox = that.byId("monthSelectionBox");
+						var oQuarterBox = that.byId("quarterSelectionBox");
+
+						oYearBox.setVisible(true);
+						oMonthBox.setVisible(true);
+						oQuarterBox.setVisible(false);
+
+						oGlobalDataModel.setProperty("/selectedGLType", "A");
+						oGlobalDataModel.setProperty("/selectedTabText", "Incoming & Outgoing GL(Monthly)");
+						oGlobalDataModel.setProperty("/selectedOption", "3");
 
 						// Clear input fields
 						var aInputIds = [
@@ -580,7 +563,7 @@ sap.ui.define([
 								});
 							}
 						});
-						
+
 						that._updateGlobalDataModel();
 					}
 				}
