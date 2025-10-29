@@ -1,158 +1,149 @@
 {
-    "_version": "1.7.0",
-    "sap.app": {
-        "id": "com.infocus.ZBankApp",
-        "type": "application",
-        "i18n": "i18n/i18n.properties",
-        "applicationVersion": {
-            "version": "1.0.0"
-        },
-        "title": "{{Bank_Application}}",
-        "description": "{{appDescription}}",
-        "sourceTemplate": {
-            "id": "servicecatalog.connectivityComponent",
-            "version": "0.0.0"
-        },
-        "dataSources": {
-            "mainService": {
-                "uri": "/sap/opu/odata/sap/Z_INF_BANK_FIORI_DASHBOARD_SRV/",
-                "type": "OData",
-                "settings": {
-                    "odataVersion": "2.0",
-                    "localUri": "localService/Z_INF_BANK_FIORI_DASHBOARD_SRV/metadata.xml"
-                }
-            },
-            "parameterMasterService": {
-                "uri": "/sap/opu/odata/sap/Z_INF_BANK_KDS_SRV/",
-                "type": "OData",
-                "settings": {
-                    "odataVersion": "2.0",
-                    "localUri": "localService/Z_INF_BANK_KDS_SRV/metadata.xml"
-                }
-            }
-        }
-    },
-    "sap.ui": {
-        "technology": "UI5",
-        "icons": {
-            "icon": "",
-            "favIcon": "",
-            "phone": "",
-            "phone@2": "",
-            "tablet": "",
-            "tablet@2": ""
-        },
-        "deviceTypes": {
-            "desktop": true,
-            "tablet": true,
-            "phone": true
-        },
-        "supportedThemes": [
-            "sap_hcb",
-            "sap_belize"
-        ]
-    },
-    "sap.ui5": {
-        "rootView": {
-            "viewName": "com.infocus.ZBankApp.view.App",
-            "type": "XML"
-        },
-        "dependencies": {
-            "minUI5Version": "1.96.0",
-            "libs": {
-                "sap.collaboration": {},
-                "sap.m": {},
-                "sap.suite.ui.commons": {},
-                "sap.ui.comp": {},
-                "sap.ui.core": {},
-                "sap.ui.layout": {},
-                "sap.ushell": {},
-                "sap.uxap": {}
-            }
-        },
-        "contentDensities": {
-            "compact": true,
-            "cozy": true
-        },
-        "models": {
-            "i18n": {
-                "type": "sap.ui.model.resource.ResourceModel",
-                "settings": {
-                    "bundleName": "com.infocus.ZBankApp.i18n.i18n"
-                }
-            },
-            "": {
-                "dataSource": "mainService",
-                "preload": true,
-                "settings": {
-                    "useBatch": true,
-                    "defaultBindingMode": "TwoWay"
-                }
-            },
-            "parameterMasterModel": {
-                "dataSource": "parameterMasterService",
-                "preload": true,
-                "settings": {
-                    "useBatch": false
-                }
-            },
-            "globalData": {
-                "type": "sap.ui.model.json.JSONModel"
-            },
-            "bankAccountMasterData": {
-                "type": "sap.ui.model.json.JSONModel"
-            },
-            "companyCodeMasterData": {
-                "type": "sap.ui.model.json.JSONModel"
-            },
-            "GLMasterData": {
-                "type": "sap.ui.model.json.JSONModel"
-            }
-        },
-        "resources": {
-            "css": [
-                {
-                    "uri": "css/style.css"
-                }
-            ],
-            "js": []
-        },
-        "routing": {
-            "config": {
-                "routerClass": "sap.m.routing.Router",
-                "viewType": "XML",
-                "async": true,
-                "viewPath": "com.infocus.ZBankApp.view",
-                "controlId": "app",
-                "controlAggregation": "pages",
-                "clearAggregation": false
-            },
-            "routes": [
-                {
-                    "name": "home",
-                    "pattern": "",
-                    "target": "home"
-                },
-                {
-                    "name": "chart",
-                    "pattern": "chart",
-                    "target": "chart"
-                }
-            ],
-            "targets": {
-                "home": {
-                    "viewName": "Home",
-                    "viewLevel": 1
-                },
-                "chart": {
-                    "viewName": "Chart",
-                    "viewLevel": 2
-                }
-            }
-        }
-    },
-    "sap.platform.abap": {
-        "uri": "/sap/bc/ui5_ui5/sap/zbankapp",
-        "_version": "1.1.0"
-    }
+	"_version": "1.7.0",
+	"sap.app": {
+		"id": "com.infocus.ZBankApp",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{Bank_Application}}",
+		"description": "{{appDescription}}",
+		"sourceTemplate": {
+			"id": "servicecatalog.connectivityComponent",
+			"version": "0.0.0"
+		},
+		"dataSources": {
+			"mainService": {
+				"uri": "/sap/opu/odata/sap/Z_INF_BANK_FIORI_DASHBOARD_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/Z_INF_BANK_FIORI_DASHBOARD_SRV/metadata.xml"
+				}
+			},
+			"parameterMasterService": {
+				"uri": "/sap/opu/odata/sap/Z_INF_BANK_KDS_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/Z_INF_BANK_KDS_SRV/metadata.xml"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_belize"
+		]
+	},
+	"sap.ui5": {
+		"rootView": {
+			"viewName": "com.infocus.ZBankApp.view.App",
+			"type": "XML"
+		},
+		"dependencies": {
+			"minUI5Version": "1.96.0",
+			"libs": {}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.infocus.ZBankApp.i18n.i18n"
+				}
+			},
+			"": {
+				"dataSource": "mainService",
+				"preload": true,
+				"settings": {
+					"useBatch": true,
+					"defaultBindingMode": "TwoWay"
+				}
+			},
+			"parameterMasterModel": {
+				"dataSource": "parameterMasterService",
+				"preload": true,
+				"settings": {
+					"useBatch": false
+				}
+			},
+			"globalData": {
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"bankAccountMasterData": {
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"companyCodeMasterData": {
+				"type": "sap.ui.model.json.JSONModel"
+			},
+			"GLMasterData": {
+				"type": "sap.ui.model.json.JSONModel"
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			],
+			"js": []
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"async": true,
+				"viewPath": "com.infocus.ZBankApp.view",
+				"controlId": "app",
+				"controlAggregation": "pages",
+				"clearAggregation": false
+			},
+			"routes": [
+				{
+					"name": "home",
+					"pattern": "",
+					"target": "home"
+				},
+				{
+					"name": "chart",
+					"pattern": "chart",
+					"target": "chart"
+				}
+			],
+			"targets": {
+				"home": {
+					"viewName": "Home",
+					"viewLevel": 1
+				},
+				"chart": {
+					"viewName": "Chart",
+					"viewLevel": 2
+				}
+			}
+		}
+	},
+	"sap.platform.abap": {
+		"uri": "/sap/bc/ui5_ui5/sap/zbankapp",
+		"_version": "1.1.0"
+	}
 }

@@ -44,7 +44,7 @@ html .sapUiTableCtrl tr.sapUiTableRowSel > td {
 
 .beautifulTabBar .sapMITBHead {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   width: 100%;
 }
@@ -214,5 +214,3 @@ body.dark-theme .customTitleCenter {
 .darkModeIcon .sapMBtnIcon {
   color: #fff !important;
 }
-
-

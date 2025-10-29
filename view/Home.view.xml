@@ -82,6 +82,7 @@
                                 icon="sap-icon://lightbulb"
                                 press=".onToggleTheme"
                                 class="sapUiTinyMarginBegin lightModeIcon"
+                                visible="false"
                                 tooltip="Switch Theme"/>
 						</HBox>
 					</FlexBox>
@@ -115,7 +116,7 @@
 						<items>
 							<!-- Scenario 1 -->
 							<IconTabFilter key="scenario1" text="Incoming &amp; Outgoing GL (Monthly)" icon="sap-icon://journey-change"
-								tooltip="Incoming &amp; Outgoing GL (Monthly)" iconColor="Positive" design="Horizontal">
+								tooltip="Incoming &amp; Outgoing GL (Monthly)" iconColor="Positive" design="Horizontal" visible="{globalData>/isChartFragment1Visible}">
 								<content>
 									<VBox visible="{globalData>/isChartFragment1Visible}">
 										<core:Fragment id="chartFragment1" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment1" type="XML"/>
@@ -125,10 +126,19 @@
 							<IconTabSeparator/>
 							<!-- Scenario 2 -->
 							<IconTabFilter key="scenario2" text="Incoming &amp; Outgoing GL (Quaterly)" icon="sap-icon://journey-change"
-								tooltip="Incoming &amp; Outgoing GL (Quaterly)" design="Horizontal">
+								tooltip="Incoming &amp; Outgoing GL (Quaterly)" design="Horizontal" visible="{globalData>/isChartFragment2Visible}">
+								<content>
+									<VBox visible="{globalData>/isChartFragment2Visible}">
+										<core:Fragment id="chartFragment2" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment2" type="XML"/>
+									</VBox>
+								</content>
+							</IconTabFilter>
+							<!-- Scenario 3 -->
+							<IconTabFilter key="scenario3" text="Incoming &amp; Outgoing GL (Yearly)" icon="sap-icon://journey-change"
+								tooltip="Incoming &amp; Outgoing GL (Yearly)" design="Horizontal" iconColor="Negative" visible="{globalData>/isChartFragment3Visible}">
 								<content>
 									<VBox visible="{globalData>/isChartFragment3Visible}">
-										<core:Fragment id="chartFragment2" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment2" type="XML"/>
+										<core:Fragment id="chartFragment3" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment3" type="XML"/>
 									</VBox>
 								</content>
 							</IconTabFilter>
@@ -140,25 +150,34 @@
 				width="auto" height="100%">
 				<content>
 					<!-- IconTabBar for switching between scenarios -->
-					<IconTabBar id="iconTabMainBar" selectedKey="scenario3" select="onTabSelectMainGL" stretchContentHeight="true" class="beautifulTabBar">
+					<IconTabBar id="iconTabMainBar" selectedKey="scenario4" select="onTabSelectMainGL" stretchContentHeight="true" class="beautifulTabBar">
 						<items>
 							
-							<!-- Scenario 3 -->
-							<IconTabFilter key="scenario3" text="Main GL (Monthly)" icon="sap-icon://wallet" tooltip="Main GL (Monthly)" iconColor="Critical"
-								design="Horizontal">
+							<!-- Scenario 4 -->
+							<IconTabFilter key="scenario4" text="Main GL (Monthly)" icon="sap-icon://wallet" tooltip="Main GL (Monthly)" iconColor="Critical"
+								design="Horizontal" visible="{globalData>/isChartFragment4Visible}">
 								<content>
-									<!--<VBox visible="{globalData>/isChartFragment5Visible}">
-										<core:Fragment id="chartFragment3" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment3" type="XML"/>
+									<!--<VBox visible="{globalData>/isChartFragment4Visible}">
+										<core:Fragment id="chartFragment4" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment4" type="XML"/>
 									</VBox>-->
 								</content>
 							</IconTabFilter>
 							<IconTabSeparator/>
-							<!-- Scenario 4 -->
-							<IconTabFilter key="scenario4" text="Main GL (Quaterly)" icon="sap-icon://wallet" tooltip="Main GL (Quaterly)" iconColor="Negative"
-								design="Horizontal">
+							<!-- Scenario 5 -->
+							<IconTabFilter key="scenario5" text="Main GL (Quaterly)" icon="sap-icon://wallet" tooltip="Main GL (Quaterly)" iconColor="Negative"
+								design="Horizontal" visible="{globalData>/isChartFragment5Visible}">
 								<content>
-									<VBox visible="{globalData>/isChartFragment7Visible}">
-										<core:Fragment id="chartFragment4" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment4" type="XML"/>
+									<VBox visible="{globalData>/isChartFragment5Visible}">
+										<core:Fragment id="chartFragment5" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment5" type="XML"/>
+									</VBox>
+								</content>
+							</IconTabFilter>
+								<!-- Scenario 6 -->
+							<IconTabFilter key="scenario6" text="Main GL (Yearly)" icon="sap-icon://wallet" tooltip="Main GL (Quaterly)" iconColor="Negative"
+								design="Horizontal" visible="{globalData>/isChartFragment6Visible}">
+								<content>
+									<VBox visible="{globalData>/isChartFragment6Visible}">
+										<core:Fragment id="chartFragment6" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment6" type="XML"/>
 									</VBox>
 								</content>
 							</IconTabFilter>

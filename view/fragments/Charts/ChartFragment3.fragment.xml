@@ -1,0 +1,113 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns:m="sap.m"
+    xmlns:table="sap.ui.table"
+    xmlns:suite="sap.suite.ui.commons"
+    xmlns:viz="sap.viz.ui5.controls"
+    xmlns:vizData="sap.viz.ui5.data"
+    xmlns:vizFeeds="sap.viz.ui5.controls.common.feeds">
+
+    <!-- ======================================================
+         Yearly AMOUNT SUMMARY VIEW (CHART + TABLE)
+         ====================================================== -->
+    <suite:ChartContainer
+        id="chartContainerYearlyAmount"
+        showFullScreen="true"
+        showPersonalization="false"
+        autoAdjustHeight="false"
+        showLegendButton="false"
+        title="">
+
+        <suite:content>
+
+            <!-- ================= Chart View ================= -->
+            <suite:ChartContainerContent icon="sap-icon://bar-chart" title="Chart View">
+                <suite:content>
+                    <viz:VizFrame
+                        id="idYearlyAmountVizFrame"
+                        vizType="column"
+                        height="380px"
+                        width="100%"
+                        uiConfig="{applicationSet:'fiori'}">
+
+                        <!-- Popover for tooltip -->
+                        <viz:dependents>
+                            <viz:Popover id="idPopOverYearlyAmount"></viz:Popover>
+                        </viz:dependents>
+
+                        <!-- Data Binding -->
+                        <viz:dataset>
+                            <vizData:FlattenedDataset data="{GLMasterData>/inOutGLDataYearly}">
+                                <vizData:dimensions>
+                                    <!--<vizData:DimensionDefinition name="Month" value="{GLMasterData>periodText}" />-->
+                                    <vizData:DimensionDefinition name="Year" value="{GLMasterData>gjahr}" />
+                                </vizData:dimensions>
+                                <vizData:measures>
+                                    <vizData:MeasureDefinition name="Incoming Amount" value="{GLMasterData>per_sales_i}" />
+                                    <vizData:MeasureDefinition name="Outgoing Amount" value="{GLMasterData>per_sales_o}" />
+                                </vizData:measures>
+                            </vizData:FlattenedDataset>
+                        </viz:dataset>
+
+                        <!-- Chart Feeds -->
+                        <viz:feeds>
+                            <vizFeeds:FeedItem uid="valueAxis" type="Measure" values="Incoming Amount,Outgoing Amount" />
+                            <!--<vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Month" />-->
+                            <vizFeeds:FeedItem uid="categoryAxis" type="Dimension" values="Year" />
+                        </viz:feeds>
+                    </viz:VizFrame>
+                </suite:content>
+            </suite:ChartContainerContent>
+
+            <!-- ================= Table View ================= -->
+            <suite:ChartContainerContent icon="sap-icon://table-chart" title="Table View">
+                <suite:content>
+                    <table:Table
+                        id="idYearlyAmountTable"
+                        class="greenTable"
+                        rows="{GLMasterData>/inOutGLDataYearly}"
+                        selectionMode="None"
+                        visibleRowCount="10"
+                        width="100%"
+                        enableColumnReordering="false"
+                        columnHeaderVisible="true">
+
+                        <table:columns>
+
+                            <!--<table:Column width="25%">-->
+                            <!--    <m:Label text="Month" class="sapUiTinyMargin sapUiSmallMarginBegin" />-->
+                            <!--    <table:template>-->
+                            <!--        <m:Text text="{GLMasterData>periodText}" wrapping="true" />-->
+                            <!--    </table:template>-->
+                            <!--</table:Column>-->
+
+                            <table:Column width="25%">
+                                <m:Label text="Year" class="sapUiTinyMargin sapUiSmallMarginBegin" />
+                                <table:template>
+                                    <m:Text text="{GLMasterData>gjahr}" wrapping="true" />
+                                </table:template>
+                            </table:Column>
+
+                            <table:Column width="25%">
+                                <m:Label text="Incoming Amount(Lacs)" class="sapUiTinyMargin sapUiSmallMarginBegin" />
+                                <table:template>
+                                    <m:Text text="{GLMasterData>per_sales_i}" wrapping="true" />
+                                </table:template>
+                            </table:Column>
+
+                            <table:Column width="25%">
+                                <m:Label text="Outgoing Amount(Lacs)" class="sapUiTinyMargin sapUiSmallMarginBegin" />
+                                <table:template>
+                                    <m:Text text="{GLMasterData>per_sales_o}" wrapping="true" />
+                                </table:template>
+                            </table:Column>
+
+                        </table:columns>
+                    </table:Table>
+                </suite:content>
+            </suite:ChartContainerContent>
+
+        </suite:content>
+    </suite:ChartContainer>
+
+</core:FragmentDefinition>

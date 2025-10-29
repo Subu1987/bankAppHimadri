@@ -17,9 +17,9 @@ sap.ui.define([
 		onInit: function() {
 
 			// Restore the last selected theme when the app starts
-			var oCore = sap.ui.getCore();
-			var sSavedTheme = localStorage.getItem("selectedTheme") || "sap_fiori_3";
-			oCore.applyTheme(sSavedTheme);
+			// var oCore = sap.ui.getCore();
+			// var sSavedTheme = localStorage.getItem("selectedTheme") || "sap_fiori_3";
+			// oCore.applyTheme(sSavedTheme);
 
 			this._initializeApp();
 
@@ -50,38 +50,48 @@ sap.ui.define([
 				oGlobalDataModel.setProperty("/selectedGLType", "A");
 				oGlobalDataModel.setProperty("/selectedOption", "3");
 
+				// When Incoming/Outgoing Radio Button Selected
+				oGlobalDataModel.setProperty("/isChartFragment1Visible", true);
+				oGlobalDataModel.setProperty("/isChartFragment2Visible", false);
+				oGlobalDataModel.setProperty("/isChartFragment3Visible", false);
+
+				// When Main GL Radio Button Selected
+				oGlobalDataModel.setProperty("/isChartFragment4Visible", true);
+				oGlobalDataModel.setProperty("/isChartFragment5Visible", false);
+				oGlobalDataModel.setProperty("/isChartFragment6Visible", false);
+
 			} else {
 				console.error("Global data model is not available.");
 			}
 		},
-		onToggleTheme: function() {
-			var oCore = sap.ui.getCore();
-			var oButton = this.byId("themeToggleBtn");
+		// onToggleTheme: function() {
+		// 	var oCore = sap.ui.getCore();
+		// 	var oButton = this.byId("themeToggleBtn");
 
-			// Define light and dark themes
-			var sLightTheme = "sap_fiori_3";
-			var sDarkTheme = "sap_fiori_3_dark";
+		// 	// Define light and dark themes
+		// 	var sLightTheme = "sap_fiori_3";
+		// 	var sDarkTheme = "sap_fiori_3_dark";
 
-			// Get current theme
-			var sCurrentTheme = oCore.getConfiguration().getTheme();
+		// 	// Get current theme
+		// 	var sCurrentTheme = oCore.getConfiguration().getTheme();
 
-			// Determine next theme
-			var bIsLight = sCurrentTheme === sLightTheme;
-			var sNewTheme = bIsLight ? sDarkTheme : sLightTheme;
+		// 	// Determine next theme
+		// 	var bIsLight = sCurrentTheme === sLightTheme;
+		// 	var sNewTheme = bIsLight ? sDarkTheme : sLightTheme;
 
-			// Apply theme
-			oCore.applyTheme(sNewTheme);
+		// 	// Apply theme
+		// 	oCore.applyTheme(sNewTheme);
 
-			// Update icon & color immediately for user feedback
-			if (oButton) {
-				oButton.setIcon("sap-icon://lightbulb");
-				oButton.removeStyleClass("lightModeIcon darkModeIcon");
-				oButton.addStyleClass(bIsLight ? "darkModeIcon" : "lightModeIcon");
-			}
+		// 	// Update icon & color immediately for user feedback
+		// 	if (oButton) {
+		// 		oButton.setIcon("sap-icon://lightbulb");
+		// 		oButton.removeStyleClass("lightModeIcon darkModeIcon");
+		// 		oButton.addStyleClass(bIsLight ? "darkModeIcon" : "lightModeIcon");
+		// 	}
 
-			// Save the theme so it persists on refresh
-			localStorage.setItem("selectedTheme", sNewTheme);
-		},
+		// 	// Save the theme so it persists on refresh
+		// 	localStorage.setItem("selectedTheme", sNewTheme);
+		// },
 
 		/*************** validate Inputs *****************/
 		validateInputs: function() {
@@ -211,25 +221,55 @@ sap.ui.define([
 			var oYearBox = this.byId("fiscalYearSelectionBox");
 			var oMonthBox = this.byId("monthSelectionBox");
 			var oQuarterBox = this.byId("quarterSelectionBox");
-			
+
 			if (oSelectedIndex === 0) { // Monthly selected
-			    oYearBox.setVisible(true);
+				oYearBox.setVisible(true);
 				oMonthBox.setVisible(true);
 				oQuarterBox.setVisible(false);
+
+				// When Incoming/Outgoing Radio Button Selected
 				oGlobalModel.setProperty("/selectedOption", "3");
-				
+				oGlobalModel.setProperty("/isChartFragment1Visible", true);
+				oGlobalModel.setProperty("/isChartFragment2Visible", false);
+				oGlobalModel.setProperty("/isChartFragment3Visible", false);
+
+				// When Main GL Radio Button Selected
+				oGlobalModel.setProperty("/isChartFragment4Visible", true);
+				oGlobalModel.setProperty("/isChartFragment5Visible", false);
+				oGlobalModel.setProperty("/isChartFragment6Visible", false);
+
 			} else if (oSelectedIndex === 1) { // Quarterly selected
-			    oYearBox.setVisible(true);
+				oYearBox.setVisible(true);
 				oMonthBox.setVisible(false);
 				oQuarterBox.setVisible(true);
+
+				// When Incoming/Outgoing Radio Button Selected
 				oGlobalModel.setProperty("/selectedOption", "4");
-				
-			} else if(oSelectedIndex === 2){ // Yearly selected
-			    oYearBox.setVisible(true);
-			    oMonthBox.setVisible(false);
+				oGlobalModel.setProperty("/isChartFragment1Visible", false);
+				oGlobalModel.setProperty("/isChartFragment2Visible", true);
+				oGlobalModel.setProperty("/isChartFragment3Visible", false);
+
+				// When Main GL Radio Button Selected
+				oGlobalModel.setProperty("/isChartFragment4Visible", false);
+				oGlobalModel.setProperty("/isChartFragment5Visible", true);
+				oGlobalModel.setProperty("/isChartFragment6Visible", false);
+
+			} else if (oSelectedIndex === 2) { // Yearly selected
+				oYearBox.setVisible(true);
+				oMonthBox.setVisible(false);
 				oQuarterBox.setVisible(false);
+
+				// When Incoming/Outgoing Radio Button Selected
 				oGlobalModel.setProperty("/selectedOption", "6");
-				
+				oGlobalModel.setProperty("/isChartFragment1Visible", false);
+				oGlobalModel.setProperty("/isChartFragment2Visible", false);
+				oGlobalModel.setProperty("/isChartFragment3Visible", true);
+
+				// When Main GL Radio Button Selected
+				oGlobalModel.setProperty("/isChartFragment4Visible", false);
+				oGlobalModel.setProperty("/isChartFragment5Visible", false);
+				oGlobalModel.setProperty("/isChartFragment6Visible", true);
+
 			}
 		},
 		onRadioButtonSelectGL: function(oEvent) {
@@ -282,7 +322,7 @@ sap.ui.define([
 			addFilter("bank_name", selectedBankAccount);
 
 			// 🔹 Conditional filters for GL Type & Option
-			if (["A", "B"].includes(selectedGLType) && ["3", "4"].includes(selectedOption)) {
+			if (["A", "B"].includes(selectedGLType) && ["3", "4", "6"].includes(selectedOption)) {
 				var isMonthly = selectedOption === "3";
 
 				// Always include both period & quarter (even if one is empty)
@@ -331,8 +371,8 @@ sap.ui.define([
 						oGLlistModel.setProperty("/inOutGLDataQuarterly", oData);
 						this._bindIncomingOutgoingGLQuarterlyChart("chartFragment2", oData);
 
-					}else if (oGlobalData.selectedGLType === "A" && oGlobalData.selectedOption === "6") {
-						// Incoming & Outgoing GL (Quarterly)
+					} else if (oGlobalData.selectedGLType === "A" && oGlobalData.selectedOption === "6") {
+						// Incoming & Outgoing GL (Yearly)
 						oGLlistModel.setProperty("/inOutGLDataYearly", oData);
 						this._bindIncomingOutgoingGLYearlyChart("chartFragment3", oData);
 
@@ -425,7 +465,67 @@ sap.ui.define([
 			sap.m.MessageBox.confirm("Are you sure you want to clear all data?", {
 				onClose: function(oAction) {
 					var oGlobalDataModel = that.getOwnerComponent().getModel("globalData");
+
 					if (oAction === sap.m.MessageBox.Action.OK) {
+
+						// that._updateGlobalDataModel();
+
+						/* ============================================================
+                   Reset RadioButtonGroups and Trigger Handlers
+                   ============================================================ */
+						// Reset GL Radio Group
+						const oRadioGroupGL = that.byId("radioBtnGroupGL");
+						if (oRadioGroupGL) {
+							oRadioGroupGL.setSelectedIndex(0); // "Incoming & Outgoing GL"
+							that.onRadioButtonSelectGL({
+								getParameter: () => ({
+									selectedIndex: 0
+								}),
+								getSource: () => oRadioGroupGL
+							});
+						}
+
+						// Reset Period Radio Group
+						const oRadioGroupPeriod = that.byId("radioBtnGroupPeriod");
+						if (oRadioGroupPeriod) {
+							oRadioGroupPeriod.setSelectedIndex(0); // "Monthly"
+							that.onRadioButtonSelectPeriod({
+								getParameter: (sParam) => sParam === "selectedIndex" ? 0 : null,
+								getSource: () => oRadioGroupPeriod
+							});
+						}
+
+						/* ============================================================
+						   Reset IconTabBar to default
+						   ============================================================ */
+
+						var oIncomingOutgoingPanel = that.byId("panelIncomingOutgoingViewBox");
+						var oMainGLPanel = that.byId("panelMainViewBox");
+
+						oIncomingOutgoingPanel.setVisible(true);
+						oMainGLPanel.setVisible(false);
+
+						// Incoming & Outgoing GL TabBar
+						const oIconTabBarInOut = oView.byId("iconTabIncomingOutgoingBar");
+						if (oIconTabBarInOut) {
+							oIconTabBarInOut.getItems().forEach(function(oItem) {
+								const sKey = oItem.getKey();
+								// Show only Scenario 1
+								oItem.setVisible(sKey === "scenario1");
+							});
+							oIconTabBarInOut.setSelectedKey("scenario1");
+						}
+
+						// Main GL TabBar
+						const oIconTabBarMain = oView.byId("iconTabMainBar");
+						if (oIconTabBarMain) {
+							oIconTabBarMain.getItems().forEach(function(oItem) {
+								const sKey = oItem.getKey();
+								// Show only Scenario 4
+								oItem.setVisible(sKey === "scenario4");
+							});
+							oIconTabBarMain.setSelectedKey("scenario4");
+						}
 
 						// Clear input fields
 						var aInputIds = [
@@ -466,7 +566,8 @@ sap.ui.define([
 							venderMasterData: ["/"],
 							companyCodeMasterData: ["/"],
 							globalData: ["/"],
-							venderHistoryData: ["/"]
+							venderHistoryData: ["/"],
+							GLMasterData: ["/"]
 
 						};
 
@@ -479,6 +580,8 @@ sap.ui.define([
 								});
 							}
 						});
+						
+						that._updateGlobalDataModel();
 					}
 				}
 			});
@@ -571,6 +674,48 @@ sap.ui.define([
 		},
 
 		// ==========================================================
+		//  🔹 Incoming & Outgoing GL - Yearly
+		// ==========================================================
+		_bindIncomingOutgoingGLYearlyChart: function(sFragmentId, oData) {
+			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idYearlyAmountVizFrame");
+			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idPopOverYearlyAmount");
+
+			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
+
+			oPopover.connect(oVizFrame.getVizUid());
+
+			oVizFrame.setVizProperties({
+				title: {
+					text: "Incoming & Outgoing GL (Yearly)",
+					visible: true
+				},
+				plotArea: {
+					dataLabel: {
+						visible: true,
+						formatString: "#,##0.00"
+					},
+					drawingEffect: "glossy"
+				},
+				legend: {
+					visible: true
+				},
+				valueAxis: {
+					title: {
+						text: "Amount (₹ Lacs)"
+					}
+				},
+				categoryAxis: {
+					title: {
+						text: "Year"
+					}
+				},
+				tooltip: {
+					visible: true
+				}
+			});
+		},
+
+		// ==========================================================
 		//  🔹 Main GL - Monthly
 		// ==========================================================
 		_bindMainGLMonthlyChart: function(sFragmentId, oData) {
@@ -645,6 +790,48 @@ sap.ui.define([
 				categoryAxis: {
 					title: {
 						text: "Quarter"
+					}
+				},
+				tooltip: {
+					visible: true
+				},
+				legend: {
+					visible: true
+				}
+			});
+		},
+		// ==========================================================
+		//  🔹 Main GL - Yearly
+		// ==========================================================
+		_bindMainGLYearlyChart: function(sFragmentId, oData) {
+			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLYearlyVizFrame");
+			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLYearlyPopover");
+
+			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
+
+			oPopover.connect(oVizFrame.getVizUid());
+
+			oVizFrame.setVizProperties({
+				title: {
+					text: "Main GL (Yearly)",
+					visible: true
+				},
+				plotArea: {
+					dataLabel: {
+						visible: true,
+						formatString: "#,##0.00"
+					},
+					drawingEffect: "glossy",
+					colorPalette: ["#E67E22"]
+				},
+				valueAxis: {
+					title: {
+						text: "Bank Balance (₹ Lacs)"
+					}
+				},
+				categoryAxis: {
+					title: {
+						text: "Year"
 					}
 				},
 				tooltip: {
