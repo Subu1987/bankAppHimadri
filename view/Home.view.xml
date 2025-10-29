@@ -92,7 +92,7 @@
 						<HBox id="radioGroupGL" direction="Row" alignItems="Center" class="sapUiTinyMarginEnd">
 							<RadioButtonGroup id="radioBtnGroupGL" columns="2" select="onRadioButtonSelectGL" class="styledRadioGroup">
 								<RadioButton id="incomingOutgoingGL" text="Incoming &amp; Outgoing GL"/>
-								<RadioButton id="mainGL" text="Main GL"/>
+								<RadioButton id="mainGL" text="Closing Bank Balance"/>
 							</RadioButtonGroup>
 						</HBox>
 						<!-- ===== Group 2: Time Period Options ===== -->
@@ -154,7 +154,7 @@
 						<items>
 							
 							<!-- Scenario 4 -->
-							<IconTabFilter key="scenario4" text="Main GL (Monthly)" icon="sap-icon://wallet" tooltip="Main GL (Monthly)" iconColor="Critical"
+							<IconTabFilter key="scenario4" text="Closing Bank Balance (Monthly)" icon="sap-icon://wallet" tooltip="Main GL (Monthly)" iconColor="Critical"
 								design="Horizontal" visible="{globalData>/isChartFragment4Visible}">
 								<content>
 									<!--<VBox visible="{globalData>/isChartFragment4Visible}">
@@ -164,7 +164,7 @@
 							</IconTabFilter>
 							<IconTabSeparator/>
 							<!-- Scenario 5 -->
-							<IconTabFilter key="scenario5" text="Main GL (Quaterly)" icon="sap-icon://wallet" tooltip="Main GL (Quaterly)" iconColor="Negative"
+							<IconTabFilter key="scenario5" text="Closing Bank Balance (Quaterly)" icon="sap-icon://wallet" tooltip="Main GL (Quaterly)" iconColor="Negative"
 								design="Horizontal" visible="{globalData>/isChartFragment5Visible}">
 								<content>
 									<VBox visible="{globalData>/isChartFragment5Visible}">
@@ -173,7 +173,7 @@
 								</content>
 							</IconTabFilter>
 								<!-- Scenario 6 -->
-							<IconTabFilter key="scenario6" text="Main GL (Yearly)" icon="sap-icon://wallet" tooltip="Main GL (Quaterly)" iconColor="Negative"
+							<IconTabFilter key="scenario6" text="Closing Bank Balance (Yearly)" icon="sap-icon://wallet" tooltip="Main GL (Quaterly)" iconColor="Positive"
 								design="Horizontal" visible="{globalData>/isChartFragment6Visible}">
 								<content>
 									<VBox visible="{globalData>/isChartFragment6Visible}">
