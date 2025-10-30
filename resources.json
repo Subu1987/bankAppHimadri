@@ -1,31 +1,51 @@
 {
     "resources": [
         {
-            "name": "i18n/i18n.properties",
-            "raw": "i18n/i18n.properties"
+            "name": "libs/html2pdf.bundle.js"
         },
         {
-            "name": ".user.project.json"
-        },
-        {
-            "name": "Component-preload.js",
-            "merged": true
+            "name": "model/models.js"
         },
         {
             "name": "resources.json",
             "merged": true
         },
         {
-            "name": "webapp/localService/Z_INF_BANK_FIORI_DASHBOARD_SRV/metadata.xml"
+            "name": "webapp/localService/Z_INF_BANK_KDS_SRV/metadata.xml"
         },
         {
-            "name": "webapp/localService/Z_INF_BANK_KDS_SRV/metadata.xml"
+            "name": "webapp/localService/Z_INF_BANK_FIORI_DASHBOARD_SRV/metadata.xml"
         },
         {
             "name": "webapp/localService/metadata.xml"
         },
         {
-            "name": "view/App.view.xml"
+            "name": ".project.json"
+        },
+        {
+            "name": "controller/App.controller.js"
+        },
+        {
+            "name": "controller/BaseController.js"
+        },
+        {
+            "name": "controller/Home.controller.js"
+        },
+        {
+            "name": "css/style.css"
+        },
+        {
+            "name": "Component-preload.js",
+            "merged": true
+        },
+        {
+            "name": "neo-app.json"
+        },
+        {
+            "name": ".user.project.json"
+        },
+        {
+            "name": "index.html"
         },
         {
             "name": "view/dialogComponent/DialogCompanyCodeMaster.fragment.xml"
@@ -40,46 +60,32 @@
             "name": "view/fragments/Charts/ChartFragment1.fragment.xml"
         },
         {
+            "name": "view/fragments/Charts/ChartFragment3.fragment.xml"
+        },
+        {
             "name": "view/fragments/Charts/ChartFragment4.fragment.xml"
+        },
+        {
+            "name": "view/fragments/Charts/ChartFragment5.fragment.xml"
+        },
+        {
+            "name": "view/fragments/Charts/ChartFragment6.fragment.xml"
         },
         {
             "name": "view/fragments/Charts/ChartFragment2.fragment.xml"
         },
         {
-            "name": "view/fragments/Charts/ChartFragment3.fragment.xml"
+            "name": "view/App.view.xml"
         },
         {
-            "name": "controller/App.controller.js"
-        },
-        {
-            "name": "controller/Home.controller.js"
-        },
-        {
-            "name": "controller/BaseController.js"
-        },
-        {
-            "name": "Component.js"
-        },
-        {
-            "name": "model/models.js"
+            "name": "i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
         },
         {
             "name": "manifest.json"
         },
         {
-            "name": "css/style.css"
-        },
-        {
-            "name": "libs/html2pdf.bundle.js"
-        },
-        {
-            "name": "neo-app.json"
-        },
-        {
-            "name": ".project.json"
-        },
-        {
-            "name": "index.html"
+            "name": "Component.js"
         }
     ]
 }

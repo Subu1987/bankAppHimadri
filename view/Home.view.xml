@@ -47,18 +47,21 @@
 						<HBox id="monthSelectionBox" direction="Column" alignItems="Center" visible="true" class="sapUiTinyMarginBegin">
 							<ComboBox id="_monthComboBoxId" placeholder="Select Month" selectedKey="{globalData>/selectedMonth}" class="boldText roundedInput"
 								width="180px" tooltip="Select a month">
-								<core:Item key="01" text="January"/>
-								<core:Item key="02" text="February"/>
-								<core:Item key="03" text="March"/>
-								<core:Item key="04" text="April"/>
-								<core:Item key="05" text="May"/>
-								<core:Item key="06" text="June"/>
-								<core:Item key="07" text="July"/>
-								<core:Item key="08" text="August"/>
-								<core:Item key="09" text="September"/>
-								<core:Item key="10" text="October"/>
-								<core:Item key="11" text="November"/>
-								<core:Item key="12" text="December"/>
+								<!--<core:Item key="01" text="January"/>-->
+								<!--<core:Item key="02" text="February"/>-->
+								<!--<core:Item key="03" text="March"/>-->
+								<core:Item key="01" text="April"/>
+								<core:Item key="02" text="May"/>
+								<core:Item key="03" text="June"/>
+								<core:Item key="04" text="July"/>
+								<core:Item key="05" text="August"/>
+								<core:Item key="06" text="September"/>
+								<core:Item key="07" text="October"/>
+								<core:Item key="08" text="November"/>
+								<core:Item key="09" text="December"/>
+								<core:Item key="10" text="January"/>
+								<core:Item key="11" text="February"/>
+								<core:Item key="12" text="March"/>
 							</ComboBox>
 						</HBox>
 						<!-- Quarter Dropdown -->
@@ -157,9 +160,9 @@
 							<IconTabFilter key="scenario4" text="Closing Bank Balance (Monthly)" icon="sap-icon://wallet" tooltip="Main GL (Monthly)" iconColor="Critical"
 								design="Horizontal" visible="{globalData>/isChartFragment4Visible}">
 								<content>
-									<!--<VBox visible="{globalData>/isChartFragment4Visible}">
+									<VBox visible="{globalData>/isChartFragment4Visible}">
 										<core:Fragment id="chartFragment4" fragmentName="com.infocus.ZBankApp.view.fragments.Charts.ChartFragment4" type="XML"/>
-									</VBox>-->
+									</VBox>
 								</content>
 							</IconTabFilter>
 							<IconTabSeparator/>

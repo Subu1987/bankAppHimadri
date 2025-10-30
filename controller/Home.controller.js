@@ -18,7 +18,8 @@ sap.ui.define([
 
 			// Restore the last selected theme when the app starts
 			// var oCore = sap.ui.getCore();
-			// var sSavedTheme = localStorage.getItem("selectedTheme") || "sap_fiori_3";
+			// // var sSavedTheme = localStorage.getItem("selectedTheme") || "sap_fiori_3";
+			// var sSavedTheme = "sap_fiori_3_dark";
 			// oCore.applyTheme(sSavedTheme);
 
 			this._initializeApp();
@@ -417,18 +418,21 @@ sap.ui.define([
 		// 🔹 Single helper for data transformation
 		_prepareGLBalanceData: function(aData) {
 			var monthNames = {
-				"01": "January",
-				"02": "February",
-				"03": "March",
-				"04": "April",
-				"05": "May",
-				"06": "June",
-				"07": "July",
-				"08": "August",
-				"09": "September",
-				"10": "October",
-				"11": "November",
-				"12": "December"
+				// "01": "January",
+				// "02": "February",
+				// "03": "March",
+				"01": "April",
+				"02": "May",
+				"03": "June",
+				"04": "July",
+				"05": "August",
+				"06": "September",
+				"07": "October",
+				"08": "November",
+				"09": "December",
+				"10": "January",
+				"11": "February",
+				"12": "March"
 			};
 
 			return aData.map(item => {
@@ -546,8 +550,8 @@ sap.ui.define([
 						var oModelResetMap = {
 
 							// Supplier Due models (reset OData results)
-							venderMasterData: ["/"],
-							companyCodeMasterData: ["/"],
+							// venderMasterData: ["/"],
+							// companyCodeMasterData: ["/"],
 							globalData: ["/"],
 							venderHistoryData: ["/"],
 							GLMasterData: ["/"]
@@ -720,7 +724,7 @@ sap.ui.define([
 						formatString: "#,##0.00"
 					},
 					drawingEffect: "glossy",
-					colorPalette: ["#2E86C1"]
+					colorPalette: ["#E67E22"]
 				},
 				valueAxis: {
 					title: {

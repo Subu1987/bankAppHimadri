@@ -48,6 +48,9 @@ html .sapUiTableCtrl tr.sapUiTableRowSel > td {
   align-items: center;
   width: 100%;
 }
+.beautifulTabBar .sapMITHTextContent{
+	    padding-bottom: 10px;
+}
 
 .beautifulTabBar .sapMITBIcon {
   font-size: 1.1rem;
