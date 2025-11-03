@@ -597,7 +597,8 @@ sap.ui.define([
 						visible: true,
 						formatString: "#,##0.00"
 					},
-					drawingEffect: "glossy"
+					drawingEffect: "glossy",
+					colorPalette: ["#00C6FF", "#E5C757"]
 				},
 				legend: {
 					visible: true
@@ -639,7 +640,8 @@ sap.ui.define([
 						visible: true,
 						formatString: "#,##0.00"
 					},
-					drawingEffect: "glossy"
+					drawingEffect: "glossy",
+					colorPalette: ["#00C6FF", "#E5C757"]
 				},
 				legend: {
 					visible: true
@@ -681,7 +683,8 @@ sap.ui.define([
 						visible: true,
 						formatString: "#,##0.00"
 					},
-					drawingEffect: "glossy"
+					drawingEffect: "glossy",
+					colorPalette: ["#00C6FF", "#E5C757"]
 				},
 				legend: {
 					visible: true
@@ -705,6 +708,14 @@ sap.ui.define([
 		// ==========================================================
 		//  🔹 Main GL - Monthly
 		// ==========================================================
+		// 🔹 Helper function to generate random colors
+		_getRandomColor: function() {
+			// Generates bright, distinct colors using HSL
+			var hue = Math.floor(Math.random() * 360);
+			var saturation = 80 + Math.random() * 10; // 80–90%
+			var lightness = 45 + Math.random() * 10; // 45–55%
+			return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+		},
 		_bindMainGLMonthlyChart: function(sFragmentId, oData) {
 			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLMonthlyVizFrame");
 			var oPopover = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLMonthlyPopover");
@@ -712,6 +723,25 @@ sap.ui.define([
 			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
 
 			oPopover.connect(oVizFrame.getVizUid());
+
+			// 🔹 Step 1: Generate random color for each unique periodText (Month)
+			var colorMap = {};
+			oData.forEach(item => {
+				var month = item.periodText || item.period; // fallback if periodText missing
+				if (!colorMap[month]) {
+					colorMap[month] = this._getRandomColor();
+				}
+			});
+
+			// 🔹 Step 2: Define color rules for VizFrame
+			var rules = Object.keys(colorMap).map(month => ({
+				dataContext: {
+					"Month": month
+				}, // matches DimensionDefinition name
+				properties: {
+					color: colorMap[month]
+				}
+			}));
 
 			oVizFrame.setVizProperties({
 				title: {
@@ -724,7 +754,10 @@ sap.ui.define([
 						formatString: "#,##0.00"
 					},
 					drawingEffect: "glossy",
-					colorPalette: ["#E67E22"]
+					// colorPalette: ["#E67E22"]
+					dataPointStyle: {
+						rules: rules
+					},
 				},
 				valueAxis: {
 					title: {
@@ -740,7 +773,7 @@ sap.ui.define([
 					visible: true
 				},
 				legend: {
-					visible: true
+					visible: false
 				}
 			});
 		},
@@ -756,6 +789,36 @@ sap.ui.define([
 
 			oPopover.connect(oVizFrame.getVizUid());
 
+			// Step 1: Create color map for each Quarter-Year combination
+			var colorMap = {};
+			var uniqueKeys = [];
+
+			oData.forEach(function(item) {
+				var key = item.quarter + " / " + item.gjahr; // unique combo per bar
+				if (!uniqueKeys.includes(key)) {
+					uniqueKeys.push(key);
+				}
+			});
+
+			var that = this;
+			uniqueKeys.forEach(function(key, i) {
+				colorMap[key] = that._getRandomColor(); // use your defined random color generator
+			});
+
+			// Step 2: Create rules for data point style
+			var rules = oData.map(function(item) {
+				var key = item.quarter + " / " + item.gjahr;
+				return {
+					dataContext: {
+						"Month": item.quarter, // matches dimension in fragment
+						"Year": item.gjahr
+					},
+					properties: {
+						color: colorMap[key]
+					}
+				};
+			});
+
 			oVizFrame.setVizProperties({
 				title: {
 					text: "Main GL (Quarterly)",
@@ -767,7 +830,11 @@ sap.ui.define([
 						formatString: "#,##0.00"
 					},
 					drawingEffect: "glossy",
-					colorPalette: ["#E67E22"]
+					// colorPalette: ["#E67E22"]
+
+					dataPointStyle: {
+						rules: rules
+					},
 				},
 				valueAxis: {
 					title: {
@@ -783,7 +850,7 @@ sap.ui.define([
 					visible: true
 				},
 				legend: {
-					visible: true
+					visible: false
 				}
 			});
 		},
@@ -797,6 +864,25 @@ sap.ui.define([
 			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
 
 			oPopover.connect(oVizFrame.getVizUid());
+			
+			// 🔹 Step 1: Generate random color for each unique periodText (Month)
+			var colorMap = {};
+			oData.forEach(item => {
+				var year = item.gjahr; // fallback if periodText missing
+				if (!colorMap[year]) {
+					colorMap[year] = this._getRandomColor();
+				}
+			});
+
+			// 🔹 Step 2: Define color rules for VizFrame
+			var rules = Object.keys(colorMap).map(year => ({
+				dataContext: {
+					"Year": year
+				}, // matches DimensionDefinition name
+				properties: {
+					color: colorMap[year]
+				}
+			}));
 
 			oVizFrame.setVizProperties({
 				title: {
@@ -809,7 +895,10 @@ sap.ui.define([
 						formatString: "#,##0.00"
 					},
 					drawingEffect: "glossy",
-					colorPalette: ["#E67E22"]
+					// colorPalette: ["#E67E22"]
+					dataPointStyle: {
+						rules: rules
+					}
 				},
 				valueAxis: {
 					title: {
@@ -825,7 +914,7 @@ sap.ui.define([
 					visible: true
 				},
 				legend: {
-					visible: true
+					visible: false
 				}
 			});
 		}
