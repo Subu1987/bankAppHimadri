@@ -709,12 +709,41 @@ sap.ui.define([
 		//  🔹 Main GL - Monthly
 		// ==========================================================
 		// 🔹 Helper function to generate random colors
-		_getRandomColor: function() {
-			// Generates bright, distinct colors using HSL
-			var hue = Math.floor(Math.random() * 360);
-			var saturation = 80 + Math.random() * 10; // 80–90%
-			var lightness = 45 + Math.random() * 10; // 45–55%
-			return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+		// _getRandomColor: function() {
+		// 	// Generates bright, distinct colors using HSL
+		// 	var hue = Math.floor(Math.random() * 360);
+		// 	var saturation = 80 + Math.random() * 10; // 80–90%
+		// 	var lightness = 45 + Math.random() * 10; // 45–55%
+		// 	return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+		// },
+		_getRandomColor: function(index) {
+			const baseColors = [
+				"#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231",
+				"#911eb4", "#46f0f0", "#f032e6", "#bcf60c", "#fabebe",
+				"#008080", "#e6beff", "#9a6324", "#fffac8", "#800000",
+				"#aaffc3", "#808000", "#ffd8b1", "#000075", "#808080"
+			];
+
+			// Pick base color cyclically
+			const base = baseColors[index % baseColors.length];
+
+			// Slightly vary brightness/saturation for duplicates
+			const variation = (index / baseColors.length) * 10; // 0–10% shift
+			return this._adjustColorBrightness(base, variation);
+		},
+
+		_adjustColorBrightness: function(hex, percent) {
+			// Convert hex → RGB
+			let num = parseInt(hex.slice(1), 16);
+			let r = (num >> 16) + percent;
+			let g = ((num >> 8) & 0x00FF) + percent;
+			let b = (num & 0x0000FF) + percent;
+
+			r = Math.min(255, Math.max(0, r));
+			g = Math.min(255, Math.max(0, g));
+			b = Math.min(255, Math.max(0, b));
+
+			return `rgb(${r},${g},${b})`;
 		},
 		_bindMainGLMonthlyChart: function(sFragmentId, oData) {
 			var oVizFrame = sap.ui.core.Fragment.byId(this.createId(sFragmentId), "idMainGLMonthlyVizFrame");
@@ -724,24 +753,54 @@ sap.ui.define([
 
 			oPopover.connect(oVizFrame.getVizUid());
 
-			// 🔹 Step 1: Generate random color for each unique periodText (Month)
+			// // 🔹 Step 1: Generate random color for each unique periodText (Month)
+			// var colorMap = {};
+			// oData.forEach(item => {
+			// 	var month = item.periodText || item.period; // fallback if periodText missing
+			// 	if (!colorMap[month]) {
+			// 		colorMap[month] = this._getRandomColor();
+			// 	}
+			// });
+
+			// // 🔹 Step 2: Define color rules for VizFrame
+			// var rules = Object.keys(colorMap).map(month => ({
+			// 	dataContext: {
+			// 		"Month": month
+			// 	}, // matches DimensionDefinition name
+			// 	properties: {
+			// 		color: colorMap[month]
+			// 	}
+			// }));
+
+			// 🔹 Step 1: Collect unique month keys
 			var colorMap = {};
-			oData.forEach(item => {
+			var uniqueMonths = [];
+
+			oData.forEach(function(item) {
 				var month = item.periodText || item.period; // fallback if periodText missing
-				if (!colorMap[month]) {
-					colorMap[month] = this._getRandomColor();
+				if (month && !uniqueMonths.includes(month)) {
+					uniqueMonths.push(month);
 				}
 			});
 
-			// 🔹 Step 2: Define color rules for VizFrame
-			var rules = Object.keys(colorMap).map(month => ({
-				dataContext: {
-					"Month": month
-				}, // matches DimensionDefinition name
-				properties: {
-					color: colorMap[month]
-				}
-			}));
+			var that = this;
+
+			// 🔹 Step 2: Assign colors using fixed palette + dynamic fallback
+			uniqueMonths.forEach(function(month, i) {
+				colorMap[month] = that._getRandomColor(i);
+			});
+
+			// 🔹 Step 3: Define data point rules
+			var rules = uniqueMonths.map(function(month) {
+				return {
+					dataContext: {
+						"Month": month
+					},
+					properties: {
+						color: colorMap[month]
+					}
+				};
+			});
 
 			oVizFrame.setVizProperties({
 				title: {
@@ -789,28 +848,59 @@ sap.ui.define([
 
 			oPopover.connect(oVizFrame.getVizUid());
 
-			// Step 1: Create color map for each Quarter-Year combination
+			// // Step 1: Create color map for each Quarter-Year combination
+			// var colorMap = {};
+			// var uniqueKeys = [];
+
+			// oData.forEach(function(item) {
+			// 	var key = item.quarter + " / " + item.gjahr; // unique combo per bar
+			// 	if (!uniqueKeys.includes(key)) {
+			// 		uniqueKeys.push(key);
+			// 	}
+			// });
+
+			// var that = this;
+			// uniqueKeys.forEach(function(key, i) {
+			// 	colorMap[key] = that._getRandomColor(); // use your defined random color generator
+			// });
+
+			// // Step 2: Create rules for data point style
+			// var rules = oData.map(function(item) {
+			// 	var key = item.quarter + " / " + item.gjahr;
+			// 	return {
+			// 		dataContext: {
+			// 			"Month": item.quarter, // matches dimension in fragment
+			// 			"Year": item.gjahr
+			// 		},
+			// 		properties: {
+			// 			color: colorMap[key]
+			// 		}
+			// 	};
+			// });
+			// 🔹 Step 1: Build unique quarter-year keys
 			var colorMap = {};
 			var uniqueKeys = [];
 
 			oData.forEach(function(item) {
-				var key = item.quarter + " / " + item.gjahr; // unique combo per bar
+				var key = item.quarter + " / " + item.gjahr; // e.g. "Q1 / 2023"
 				if (!uniqueKeys.includes(key)) {
 					uniqueKeys.push(key);
 				}
 			});
 
 			var that = this;
+
+			// 🔹 Step 2: Assign distinct color per unique key
 			uniqueKeys.forEach(function(key, i) {
-				colorMap[key] = that._getRandomColor(); // use your defined random color generator
+				colorMap[key] = that._getRandomColor(i);
 			});
 
-			// Step 2: Create rules for data point style
+			// 🔹 Step 3: Create color rules for VizFrame
 			var rules = oData.map(function(item) {
 				var key = item.quarter + " / " + item.gjahr;
 				return {
 					dataContext: {
-						"Month": item.quarter, // matches dimension in fragment
+						"Month": item.quarter,
 						"Year": item.gjahr
 					},
 					properties: {
@@ -864,21 +954,39 @@ sap.ui.define([
 			if (!oVizFrame || !oPopover) return console.warn("VizFrame or Popover missing:", sFragmentId);
 
 			oPopover.connect(oVizFrame.getVizUid());
-			
-			// 🔹 Step 1: Generate random color for each unique periodText (Month)
+
+			// // 🔹 Step 1: Generate random color for each unique periodText (Month)
+			// var colorMap = {};
+			// oData.forEach(item => {
+			// 	var year = item.gjahr; // fallback if periodText missing
+			// 	if (!colorMap[year]) {
+			// 		colorMap[year] = this._getRandomColor();
+			// 	}
+			// });
+
+			// // 🔹 Step 2: Define color rules for VizFrame
+			// var rules = Object.keys(colorMap).map(year => ({
+			// 	dataContext: {
+			// 		"Year": year
+			// 	}, // matches DimensionDefinition name
+			// 	properties: {
+			// 		color: colorMap[year]
+			// 	}
+			// }));
+
+			// 🔹 Step 1: Generate distinct color for each Year
 			var colorMap = {};
-			oData.forEach(item => {
-				var year = item.gjahr; // fallback if periodText missing
-				if (!colorMap[year]) {
-					colorMap[year] = this._getRandomColor();
-				}
+			var uniqueYears = [...new Set(oData.map(item => item.gjahr))];
+
+			uniqueYears.forEach((year, i) => {
+				colorMap[year] = this._getRandomColor(i); // pass index to control hue
 			});
 
-			// 🔹 Step 2: Define color rules for VizFrame
-			var rules = Object.keys(colorMap).map(year => ({
+			// 🔹 Step 2: Define VizFrame color rules
+			var rules = uniqueYears.map(year => ({
 				dataContext: {
 					"Year": year
-				}, // matches DimensionDefinition name
+				},
 				properties: {
 					color: colorMap[year]
 				}
